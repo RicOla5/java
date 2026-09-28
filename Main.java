@@ -344,7 +344,7 @@ public class Main {
                 Scanner scanner = new Scanner(fileToRead);
                 while (scanner.hasNextLine()) {
                     String line = scanner.nextLine();
-                    if (line.contains(searchTerm)) {
+                    if (line.matches(".*" + searchTerm + ".*")) {
                         System.out.println(".* " + line + " .*");
                     }
                 }
