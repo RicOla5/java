@@ -17,7 +17,6 @@ public class LineFilter {
         boolean gzipInput = false;
         boolean gzipOutput = false;
 
-        // Parancssori argumentumok feldolgozása
         for (int i = 0; i < args.length; i++) {
             if (args[i].equals("-gi")) {
                 gzipInput = true;
@@ -39,7 +38,6 @@ public class LineFilter {
         PrintStream out = null;
 
         try {
-            // 1. Bemeneti folyam felépítése (standard bemenet, sima fájl vagy gzip fájl)
             if (input != null) {
                 File inputFile = new File(input);
                 if (!inputFile.exists() || !inputFile.isFile()) {
@@ -56,7 +54,6 @@ public class LineFilter {
                 scanner = new Scanner(System.in);
             }
 
-            // 2. Kimeneti folyam felépítése (standard kimenet, sima fájl vagy gzip fájl)
             if (output != null) {
                 OutputStream outStream = new FileOutputStream(output);
                 if (gzipOutput) {
@@ -67,7 +64,6 @@ public class LineFilter {
                 out = System.out;
             }
 
-            // 3. Sorok olvasása, illesztése és kiírása
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
                 if (line.matches(pattern)) {
@@ -77,15 +73,12 @@ public class LineFilter {
 
         } catch (IOException e) {
             System.err.println("I/O hiba történt a fájlkezelés során: " + e.getMessage());
-        } finally {
-            // Scanner lezárása
-            if (scanner != null) {
+        } 
+        if (scanner != null) {
                 scanner.close();
-            }
-            // Kimeneti folyam lezárása (a GZIPOutputStream flush-olása és tömörítés lezárása miatt kritikus)
-            if (output != null && out != null) {
+        }
+        if (output != null && out != null) {
                 out.close();
-            }
         }
     }
 }
