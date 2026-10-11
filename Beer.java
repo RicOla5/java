@@ -1,4 +1,7 @@
-public class Beer {
+public class Beer implements java.io.Serializable {
+
+    private static final long serialVersionUID = 1L;
+
     private String name;
     private String style;
     private double strength;
@@ -21,7 +24,6 @@ public class Beer {
         return strength;
     }
 
-    @Override 
     public String toString() {
         return name + " " + style + " " + strength + "%";
     }

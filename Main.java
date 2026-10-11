@@ -1,32 +1,121 @@
 import java.util.Scanner;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 
 public class Main {
-    protected static void add(ArrayList<Beer> beers, String[] beer) {
-    beers.add(new Beer(beer[1], beer[2], Double.parseDouble(beer[3])));
+
+    static ArrayList<Beer> beers = new ArrayList<Beer>();
+
+    protected static void add(String[] cmd) {
+        beers.add(new Beer(cmd[1], cmd[2], Double.parseDouble(cmd[3])));
     }
-    protected static void list(ArrayList<Beer> beers) {
+
+    protected static void list(String[] cmd) {
+        if (cmd.length > 1) {
+            if ("name".equals(cmd[1])) {
+                Collections.sort(beers, new NameComparator());
+            } else if ("style".equals(cmd[1])) {
+                Collections.sort(beers, new StyleComparator());
+            } else if ("strength".equals(cmd[1])) {
+                Collections.sort(beers, new StrengthComparator());
+            }
+        }
         for (Beer b : beers) {
             System.out.println(b);
         }
     }
 
+    protected static void save(String[] cmd) {
+        try {
+            ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(cmd[1]));
+            out.writeObject(beers);
+            out.close();
+        } catch (Exception e) {
+            System.out.println("Error saving to file.");
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    protected static void load(String[] cmd) {
+        try {
+            ObjectInputStream in = new ObjectInputStream(new FileInputStream(cmd[1]));
+            beers = (ArrayList<Beer>) in.readObject();
+            in.close();
+        } catch (Exception e) {
+            System.out.println("Error loading from file.");
+        }
+    }
+
+    protected static void search(String[] cmd) {
+        String field = cmd[1];
+        String value = cmd[2];
+        for (Beer b : beers) {
+            if ("name".equals(field) && b.getName().equals(value)) {
+                System.out.println(b);
+            } else if ("style".equals(field) && b.getStyle().equals(value)) {
+                System.out.println(b);
+            } else if ("strength".equals(field) && b.getStrength() == Double.parseDouble(value)) {
+                System.out.println(b);
+            }
+        }
+    }
+
+    protected static void find(String[] cmd) {
+        String field = cmd[1];
+        String value = cmd[2];
+        for (Beer b : beers) {
+            if ("name".equals(field) && b.getName().contains(value)) {
+                System.out.println(b);
+            } else if ("style".equals(field) && b.getStyle().contains(value)) {
+                System.out.println(b);
+            } else if ("strength".equals(field) && b.getStrength() >= Double.parseDouble(value)) {
+                System.out.println(b);
+            } else if ("weaker".equals(field) && b.getStrength() <= Double.parseDouble(value)) {
+                System.out.println(b);
+            }
+        }
+    }
+
+    protected static void delete(String[] cmd) {
+        Iterator<Beer> it = beers.iterator();
+        while (it.hasNext()) {
+            Beer b = it.next();
+            if (b.getName().equals(cmd[1])) {
+                it.remove();
+            }
+        }
+    }
+
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        ArrayList<Beer> beers = new ArrayList<>();
         while (true) {
             System.out.print("Enter the command: ");
-            String[] beer = scanner.nextLine().split(" ");
-            if (beer[0].equals("exit")) {
+            String[] cmd = scanner.nextLine().split(" ");
+            if ("exit".equals(cmd[0])) {
                 break;
+            } else if ("add".equals(cmd[0])) {
+                add(cmd);
+            } else if ("list".equals(cmd[0])) {
+                list(cmd);
+            } else if ("save".equals(cmd[0])) {
+                save(cmd);
+            } else if ("load".equals(cmd[0])) {
+                load(cmd);
+            } else if ("search".equals(cmd[0])) {
+                search(cmd);
+            } else if ("find".equals(cmd[0])) {
+                find(cmd);
+            } else if ("delete".equals(cmd[0])) {
+                delete(cmd);
+            } else {
+                System.out.println("Unknown command.");
             }
-            else if (beer[0].equals("add")){
-                add(beers, beer);
-            }
-            else if (beer[0].equals("list")) {
-                list(beers);
-            }
-            
         }
         scanner.close();
     }
