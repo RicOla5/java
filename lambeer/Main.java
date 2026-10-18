@@ -3,6 +3,7 @@ package lambeer;
 import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -15,26 +16,24 @@ public class Main {
 
     static ArrayList<Beer> beers = new ArrayList<Beer>();
 
+    static Map<String, Comparator<Beer>> comps = new HashMap<String, Comparator<Beer>>();
+
+    static {
+        comps.put("name", Comparator.comparing(Beer::getName));
+        comps.put("strength", Comparator.comparing(Beer::getStrength));
+        comps.put("style", Comparator.comparing(Beer::getStyle));
+    }
+
     protected static void add(String[] cmd) {
         beers.add(new Beer(cmd[1], cmd[2], Double.parseDouble(cmd[3])));
     }
 
     protected static void list(String[] cmd) {
-        if (cmd.length > 1) {
-            if ("name".equals(cmd[1])) {
-                Collections.sort(beers,
-                        (b1, b2) -> b1.getName().compareTo(b2.getName())
-                );
-            } else if ("style".equals(cmd[1])) {
-                Collections.sort(beers,
-                        (b1, b2) -> b1.getStyle().compareTo(b2.getStyle())
-                );
-            } else if ("strength".equals(cmd[1])) {
-                Collections.sort(beers,
-                        (b1, b2) -> Double.compare(b1.getStrength(), b2.getStrength())
-                );
-            }
+        Comparator<Beer> cmp = comps.get("name");
+        if (cmd.length > 1 && comps.containsKey(cmd[1])) {
+            cmp = comps.get(cmd[1]);
         }
+        Collections.sort(beers, cmp);
         for (Beer b : beers) {
             System.out.println(b);
         }
