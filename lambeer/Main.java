@@ -3,7 +3,9 @@ package lambeer;
 import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
@@ -100,26 +102,25 @@ public class Main {
     }
 
     public static void main(String[] args) {
+        Map<String, Command> commands = new HashMap<String, Command>();
+        commands.put("add", Main::add);
+        commands.put("list", Main::list);
+        commands.put("save", Main::save);
+        commands.put("load", Main::load);
+        commands.put("search", Main::search);
+        commands.put("find", Main::find);
+        commands.put("delete", Main::delete);
+
         Scanner scanner = new Scanner(System.in);
         while (true) {
             System.out.print("Enter the command: ");
             String[] cmd = scanner.nextLine().split(" ");
             if ("exit".equals(cmd[0])) {
                 break;
-            } else if ("add".equals(cmd[0])) {
-                add(cmd);
-            } else if ("list".equals(cmd[0])) {
-                list(cmd);
-            } else if ("save".equals(cmd[0])) {
-                save(cmd);
-            } else if ("load".equals(cmd[0])) {
-                load(cmd);
-            } else if ("search".equals(cmd[0])) {
-                search(cmd);
-            } else if ("find".equals(cmd[0])) {
-                find(cmd);
-            } else if ("delete".equals(cmd[0])) {
-                delete(cmd);
+            }
+            Command command = commands.get(cmd[0]);
+            if (command != null) {
+                command.execute(cmd);
             } else {
                 System.out.println("Unknown command.");
             }
