@@ -1,7 +1,8 @@
+package lambeer;
+
 import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -19,11 +20,17 @@ public class Main {
     protected static void list(String[] cmd) {
         if (cmd.length > 1) {
             if ("name".equals(cmd[1])) {
-                Collections.sort(beers, new NameComparator());
+                Collections.sort(beers,
+                        (b1, b2) -> b1.getName().compareTo(b2.getName())
+                );
             } else if ("style".equals(cmd[1])) {
-                Collections.sort(beers, new StyleComparator());
+                Collections.sort(beers,
+                        (b1, b2) -> b1.getStyle().compareTo(b2.getStyle())
+                );
             } else if ("strength".equals(cmd[1])) {
-                Collections.sort(beers, new StrengthComparator());
+                Collections.sort(beers,
+                        (b1, b2) -> Double.compare(b1.getStrength(), b2.getStrength())
+                );
             }
         }
         for (Beer b : beers) {
