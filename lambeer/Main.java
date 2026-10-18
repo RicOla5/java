@@ -6,6 +6,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -18,10 +20,13 @@ public class Main {
 
     static Map<String, Comparator<Beer>> comps = new HashMap<String, Comparator<Beer>>();
 
+    static List<String> lparams = new LinkedList<String>();
+
     static {
         comps.put("name", Comparator.comparing(Beer::getName));
         comps.put("strength", Comparator.comparing(Beer::getStrength));
         comps.put("style", Comparator.comparing(Beer::getStyle));
+        lparams.addAll(comps.keySet());
     }
 
     protected static void add(String[] cmd) {
@@ -29,11 +34,26 @@ public class Main {
     }
 
     protected static void list(String[] cmd) {
-        Comparator<Beer> cmp = comps.get("name");
-        if (cmd.length > 1 && comps.containsKey(cmd[1])) {
-            cmp = comps.get(cmd[1]);
+        for (int i = 1; i < cmd.length; i++) {
+            if (comps.containsKey(cmd[i])) {
+                lparams.remove(cmd[i]);
+                lparams.add(0, cmd[i]);
+            }
         }
-        Collections.sort(beers, cmp);
+
+        Comparator<Beer> cmp = null;
+        for (String name : lparams) {
+            if (cmp == null) {
+                cmp = comps.get(name);
+            } else {
+                cmp = cmp.thenComparing(comps.get(name));
+            }
+        }
+
+        if (cmp != null) {
+            beers.sort(cmp);
+        }
+
         for (Beer b : beers) {
             System.out.println(b);
         }
