@@ -1,0 +1,8 @@
+# Forditas kimenete
+/bin/
+
+# JaCoCo kodlefedettseg generalt fajljai
+/jacoco.exec
+/coverage.csv
+/coverage-classes/
+/coverage-report/

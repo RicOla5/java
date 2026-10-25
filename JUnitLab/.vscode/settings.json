@@ -1,0 +1,12 @@
+{
+  "java.project.sourcePaths": ["src", "test"],
+  "java.project.outputPath": "bin",
+  "java.project.referencedLibraries": [
+    "lib/junitlab-impl.jar",
+    "lib/junit-platform-console-standalone-1.11.3.jar"
+  ],
+  "java.jdt.ls.vmargs": "-Dfile.encoding=ISO-8859-2",
+  "[java]": {
+    "files.encoding": "iso88592"
+  }
+}
