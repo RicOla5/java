@@ -388,6 +388,25 @@ function finish() {
   show("result");
 }
 
+// a state szinkronizálása a TÉNYLEGES DOM-állapotból (védelem a böngésző
+// form-memóriája ellen: ha a pipa vizuálisan be van kattintva, de a change
+// event nem sült el, start előtt akkor is a valós állapotot vesszük)
+function syncSettingsFromDOM() {
+  const modeEl = document.querySelector('input[name="mode"]:checked');
+  state.mode = modeEl ? modeEl.value : "flash";
+  state.shuffle = $("shuffleChk").checked;
+  state.onlyOriginal = $("originalChk").checked;
+  state.count = $("countSel").value;
+}
+
+function startPractice() {
+  syncSettingsFromDOM();       // mindig a valós beállításokból indulunk
+  buildDeck();
+  if (state.deck.length === 0) return;
+  show("practice");
+  renderQuestion();
+}
+
 // =============== ESEMÉNYEK ===============
 function init() {
   buildTopicFilters();
@@ -402,24 +421,21 @@ function init() {
   });
   $("countSel").addEventListener("change", (e) => (state.count = e.target.value));
 
-  $("startBtn").addEventListener("click", () => {
-    buildDeck();
-    if (state.deck.length === 0) return;
-    show("practice");
-    renderQuestion();
-  });
+  // induláskor is olvassuk be a valós DOM-állapotot
+  syncSettingsFromDOM();
+  updateAvailable();
+
+  $("startBtn").addEventListener("click", startPractice);
 
   $("prevBtn").addEventListener("click", prev);
   $("showBtn").addEventListener("click", showAnswer);
   $("checkBtn").addEventListener("click", checkAnswer);
   $("nextBtn").addEventListener("click", next);
-  $("quitBtn").addEventListener("click", () => show("home"));
 
-  $("retryBtn").addEventListener("click", () => {
-    buildDeck();
-    show("practice");
-    renderQuestion();
-  });
+  // gyakorlás közbeni "Menü" gomb (vissza a főoldalra)
+  $("menuBtn").addEventListener("click", () => show("home"));
+
+  $("retryBtn").addEventListener("click", startPractice);
   $("homeBtn").addEventListener("click", () => show("home"));
 }
 

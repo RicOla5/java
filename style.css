@@ -105,6 +105,8 @@ header h1 { margin: 0; font-size: 1.7rem; }
   display: flex; align-items: center; gap: 12px;
   margin-bottom: 12px; font-size: 0.9rem; color: var(--muted);
 }
+.btn.small { padding: 5px 12px; font-size: 0.85rem; }
+#counter { margin-left: 4px; }
 .badge {
   margin-left: auto; background: var(--card2);
   border: 1px solid var(--border); border-radius: 999px;

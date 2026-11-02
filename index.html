@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Java Prog 4. KisZH – Gyakorló</title>
-  <link rel="stylesheet" href="style.css" />
+  <title>Java Prog KisZH – Gyakorló</title>
+  <link rel="stylesheet" href="style.css?v=3" />
 </head>
 <body>
   <header>
-    <h1>☕ Java Prog 4. KisZH – Gyakorló</h1>
-    <p class="subtitle">Szálkezelés · JUnit5 · Lambda — flashcard és teszt mód</p>
+    <h1>☕ Java Prog KisZH – Gyakorló</h1>
+    <p class="subtitle">JUnit5 · Lambda — flashcard és teszt mód</p>
   </header>
 
   <!-- ===================== START KÉPERNYŐ ===================== -->
@@ -68,6 +68,7 @@
   <main id="practice" class="screen hidden">
     <div class="progress-bar"><div id="progressFill"></div></div>
     <div class="practice-meta">
+      <button id="menuBtn" class="btn ghost small">🏠 Menü</button>
       <span id="counter"></span>
       <span id="scoreBox" class="hidden">Pont: <strong id="scoreVal">0</strong></span>
       <span id="topicBadge" class="badge"></span>
@@ -80,7 +81,6 @@
     </section>
 
     <div class="practice-controls">
-      <button id="quitBtn" class="btn ghost">⏹ Kilépés</button>
       <button id="prevBtn" class="btn">← Vissza</button>
       <button id="showBtn" class="btn">Válasz 👁</button>
       <button id="checkBtn" class="btn primary hidden">Ellenőrzés ✓</button>
@@ -109,7 +109,7 @@
     </p>
   </footer>
 
-  <script src="questions.js"></script>
-  <script src="app.js"></script>
+  <script src="questions.js?v=3"></script>
+  <script src="app.js?v=3"></script>
 </body>
 </html>
