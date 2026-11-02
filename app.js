@@ -130,9 +130,12 @@ function renderQuestion() {
   } else {
     // friss kérdés
     $("showBtn").classList.toggle("hidden", state.mode === "quiz");
-    $("checkBtn").classList.add("hidden");
     // kvízben a Következő csak ellenőrzés után; flashben szabadon léphet
     $("nextBtn").disabled = state.mode === "quiz";
+    // kvízben a szöveges (lambda-írós) kérdésnél azonnal jöjjön az Ellenőrzés gomb,
+    // mert ott önértékelés van (nincs mire "kiválasztani"); a választósoknál
+    // csak opció-kattintás után jelenik meg.
+    $("checkBtn").classList.toggle("hidden", !(state.mode === "quiz" && q.type === "text"));
   }
 }
 
