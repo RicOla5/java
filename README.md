@@ -11,10 +11,15 @@ A `kzh4` branch Pages-re állítása után:
 ### Funkciók
 - **🃏 Flashcard mód** – kérdés → válasz felfedése, tempó nélkül.
 - **📝 Teszt (kvíz) mód** – pontozás, a végén témakörönkénti bontás.
-- **Témakör-szűrés** (Szálkezelés / Wrapper / JUnit5 / Lambda).
+- **◀ Vissza / Következő ▶** – oda-vissza lépkedés a kérdések közt; a már
+  megadott válaszok (és a pontszám) megmaradnak lépkedésnél.
+- **Csak az eredeti (hivatalos ZH) kérdésekből** – kapcsolóval a generált
+  gyakorló kérdések kihagyhatók; így tisztán a valódi ZH-kérdésekből gyakorolhatsz.
+- **Témakör-szűrés** (JUnit5 / Lambda).
 - **Keverés** és **kérdésszám** állítható.
 - Igaz/hamis és feleletválasztós kérdések automatikus pontozással.
-- Kódfeladatoknál (lambda/wrapper) minta-megoldás + önértékelés.
+- Kódfeladatoknál (lambda) minta-megoldás + önértékelés.
+- A generált gyakorló kérdéseket **GYAKORLÓ** badge jelzi.
 
 ## 📂 Fájlok
 

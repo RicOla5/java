@@ -1,5 +1,5 @@
 // ===================================================================
-//  Java Prog 4. KisZH – gyakorló felület logikája
+//  Java Prog KisZH – gyakorló felület logikája
 // ===================================================================
 
 // --- állapot ---
@@ -7,11 +7,13 @@ const state = {
   mode: "flash",          // "flash" | "quiz"
   selectedTopics: new Set(TOPICS),
   shuffle: true,
+  onlyOriginal: false,    // csak hivatalos (nem generált) kérdések
   count: "all",
   deck: [],               // az aktuális kérdéslista
   idx: 0,
-  score: 0,               // helyes válaszok száma
-  answered: [],           // {q, correct:bool|null} tételenként
+  // kérdésenkénti állapot, INDEX szerint (nem push!), hogy vissza/előre lépésnél
+  // helyreállítható legyen. elem: { revealed, selected, correct, graded }
+  results: [],
 };
 
 // --- DOM gyorsérők ---
@@ -49,13 +51,17 @@ function buildTopicFilters() {
   updateAvailable();
 }
 
+// a szűrőknek megfelelő kérdéshalmaz
 function pool() {
-  return QUESTIONS.filter((q) => state.selectedTopics.has(q.topic));
+  return QUESTIONS.filter((q) =>
+    state.selectedTopics.has(q.topic) && (!state.onlyOriginal || !q.generated)
+  );
 }
 
 function updateAvailable() {
   const n = pool().length;
-  $("availableInfo").textContent = `Elérhető kérdés a kiválasztott témákból: ${n}`;
+  const suffix = state.onlyOriginal ? " (csak eredeti)" : "";
+  $("availableInfo").textContent = `Elérhető kérdés${suffix}: ${n}`;
   $("startBtn").disabled = n === 0;
 }
 
@@ -75,16 +81,21 @@ function buildDeck() {
   if (state.count !== "all") d = d.slice(0, parseInt(state.count, 10));
   state.deck = d;
   state.idx = 0;
-  state.score = 0;
-  state.answered = [];
+  state.results = d.map(() => null);   // minden kérdéshez üres állapot
+}
+
+// aktuális pontszám (az összes rögzített helyes válasz)
+function currentScore() {
+  return state.results.filter((r) => r && r.correct === true).length;
 }
 
 // =============== egy kérdés megjelenítése ===============
 function renderQuestion() {
   const q = state.deck[state.idx];
   const total = state.deck.length;
+  const res = state.results[state.idx];   // lehet null (még nem láttuk)
 
-  $("progressFill").style.width = `${(state.idx / total) * 100}%`;
+  $("progressFill").style.width = `${((state.idx) / total) * 100}%`;
   $("counter").textContent = `${state.idx + 1} / ${total}`;
   $("topicBadge").textContent = q.generated ? `${q.topic} · GYAKORLÓ` : q.topic;
   $("topicBadge").classList.toggle("generated", !!q.generated);
@@ -98,18 +109,30 @@ function renderQuestion() {
   area.innerHTML = "";
 
   // gombok alaphelyzet
-  $("showBtn").classList.toggle("hidden", state.mode === "quiz");
-  $("checkBtn").classList.add("hidden");
-  $("nextBtn").disabled = false;
+  $("prevBtn").disabled = state.idx === 0;
   $("scoreBox").classList.toggle("hidden", state.mode !== "quiz");
-  $("scoreVal").textContent = state.score;
+  $("scoreVal").textContent = currentScore();
+  $("nextBtn").textContent =
+    state.idx === total - 1 ? (state.mode === "quiz" ? "Befejezés ✓" : "Vége ✓") : "Következő →";
 
+  // válasz-terület felépítése
   if (q.type === "truefalse") {
     renderChoice(q, ["Igaz", "Hamis"], [true, false]);
   } else if (q.type === "single") {
     renderChoice(q, q.options, q.options.map((_, i) => i));
   } else if (q.type === "text") {
     renderText(q);
+  }
+
+  // ha már volt válasz ezen a kérdésen → állítsuk vissza a nézetet
+  if (res) {
+    restoreAnswered(q, res);
+  } else {
+    // friss kérdés
+    $("showBtn").classList.toggle("hidden", state.mode === "quiz");
+    $("checkBtn").classList.add("hidden");
+    // kvízben a Következő csak ellenőrzés után; flashben szabadon léphet
+    $("nextBtn").disabled = state.mode === "quiz";
   }
 }
 
@@ -131,12 +154,6 @@ function renderChoice(q, labels, values) {
     });
     area.appendChild(btn);
   });
-
-  if (state.mode === "quiz") {
-    // kvízben: Ellenőrzés gomb, Next tiltva amíg nincs ellenőrizve
-    $("nextBtn").disabled = true;
-    $("checkBtn").classList.add("hidden"); // amíg nincs kiválasztva
-  }
 }
 
 // szöveges (kódfeladat)
@@ -147,20 +164,57 @@ function renderText(q) {
   ta.placeholder = "Írd ide a válaszod...";
   area.appendChild(ta);
   area._textarea = ta;
-  if (state.mode === "quiz") $("nextBtn").disabled = true;
+}
+
+// =============== egy már megválaszolt kérdés nézetének helyreállítása ===============
+function restoreAnswered(q, res) {
+  const area = $("answerArea");
+  $("showBtn").classList.add("hidden");
+  $("checkBtn").classList.add("hidden");
+  $("nextBtn").disabled = false;
+
+  if (q.type === "truefalse" || q.type === "single") {
+    [...area.children].forEach((btn) => {
+      btn.disabled = true;
+      const val = JSON.parse(btn.dataset.value);
+      if (val === q.answer) btn.classList.add("correct");
+      if (res.graded && res.selected !== null && val === res.selected && res.selected !== q.answer) {
+        btn.classList.add("wrong");
+      }
+    });
+  } else if (q.type === "text") {
+    if (area._textarea) {
+      if (res.textValue != null) area._textarea.value = res.textValue;
+      area._textarea.disabled = true;
+    }
+  }
+
+  // feedback doboz visszaállítása
+  const fb = $("feedback");
+  if (state.mode === "quiz" && res.graded) {
+    renderFeedback(q, res.correct);
+  } else {
+    // flashcard: csak a válasz felfedése
+    fb.className = "feedback ok";
+    fb.innerHTML =
+      `<span class="verdict">Helyes válasz</span>` +
+      `<div>${correctAnswerText(q)}</div>` +
+      `<div class="model-answer">${escapeHtml(q.explain)}</div>`;
+  }
 }
 
 // =============== VÁLASZ MUTATÁSA (flashcard) ===============
 function showAnswer() {
   const q = state.deck[state.idx];
+  state.results[state.idx] = { revealed: true, selected: null, correct: null, graded: false };
+
   const fb = $("feedback");
   fb.className = "feedback ok";
-  let html = `<span class="verdict">Helyes válasz</span>`;
-  html += `<div>${correctAnswerText(q)}</div>`;
-  html += `<div class="model-answer">${escapeHtml(q.explain)}</div>`;
-  fb.innerHTML = html;
+  fb.innerHTML =
+    `<span class="verdict">Helyes válasz</span>` +
+    `<div>${correctAnswerText(q)}</div>` +
+    `<div class="model-answer">${escapeHtml(q.explain)}</div>`;
 
-  // flashben a választós opciókat is színezzük
   highlightCorrect(q);
   $("showBtn").classList.add("hidden");
 }
@@ -168,14 +222,12 @@ function showAnswer() {
 // =============== ELLENŐRZÉS (kvíz) ===============
 function checkAnswer() {
   const q = state.deck[state.idx];
-  let correct = false;
-  const fb = $("feedback");
 
   if (q.type === "truefalse" || q.type === "single") {
     const sel = $("answerArea")._selected;
     if (sel === null || sel === undefined) return;
-    correct = sel === q.answer;
-    // opciók tiltása + színezés
+    const correct = sel === q.answer;
+
     const area = $("answerArea");
     [...area.children].forEach((btn) => {
       btn.disabled = true;
@@ -183,18 +235,21 @@ function checkAnswer() {
       if (val === q.answer) btn.classList.add("correct");
       if (val === sel && sel !== q.answer) btn.classList.add("wrong");
     });
-  } else if (q.type === "text") {
-    // szöveges: önértékelés (nem lehet megbízhatóan automatikusan)
-    showSelfGrade(q);
-    return; // a self-grade gombok rögzítik a pontot
-  }
 
-  recordAndFeedback(q, correct);
+    state.results[state.idx] = { revealed: true, selected: sel, correct, graded: true };
+    $("scoreVal").textContent = currentScore();
+    renderFeedback(q, correct);
+    $("checkBtn").classList.add("hidden");
+    $("nextBtn").disabled = false;
+  } else if (q.type === "text") {
+    showSelfGrade(q);
+  }
 }
 
 // szöveges feladat önértékelő
 function showSelfGrade(q) {
   const area = $("answerArea");
+  const textValue = area._textarea ? area._textarea.value : "";
   if (area._textarea) area._textarea.disabled = true;
 
   const fb = $("feedback");
@@ -209,33 +264,40 @@ function showSelfGrade(q) {
      </div>`;
   $("checkBtn").classList.add("hidden");
 
-  $("sgOk").addEventListener("click", () => recordAndFeedback(q, true, true));
-  $("sgNo").addEventListener("click", () => recordAndFeedback(q, false, true));
+  $("sgOk").addEventListener("click", () => gradeText(q, true, textValue));
+  $("sgNo").addEventListener("click", () => gradeText(q, false, textValue));
 }
 
-// pont rögzítése + visszajelzés megjelenítése
-function recordAndFeedback(q, correct, isText = false) {
-  state.answered.push({ q, correct });
-  if (correct) state.score++;
-  $("scoreVal").textContent = state.score;
+function gradeText(q, correct, textValue) {
+  state.results[state.idx] = { revealed: true, selected: null, correct, graded: true, textValue };
+  $("scoreVal").textContent = currentScore();
 
   const fb = $("feedback");
-  if (!isText) {
+  const verdict = fb.querySelector(".verdict");
+  if (verdict) verdict.textContent = correct ? "Eltaláltad ✓" : "Legközelebb sikerül ✗";
+  const sg = fb.querySelector(".self-grade");
+  if (sg) sg.remove();
+  fb.className = "feedback " + (correct ? "ok" : "bad");
+
+  $("nextBtn").disabled = false;
+}
+
+// kvíz visszajelző doboz (választósokra)
+function renderFeedback(q, correct) {
+  const fb = $("feedback");
+  if (q.type === "text") {
     fb.className = "feedback " + (correct ? "ok" : "bad");
     fb.innerHTML =
-      `<span class="verdict">${correct ? "Helyes! ✓" : "Nem jó ✗"}</span>` +
-      `<div>Helyes válasz: ${correctAnswerText(q)}</div>` +
+      `<span class="verdict">${correct ? "Eltaláltad ✓" : "Nem talált ✗"}</span>` +
+      `<div class="model-answer">${escapeHtml(q.answer.join("\n— vagy —\n"))}</div>` +
       `<div class="model-answer">${escapeHtml(q.explain)}</div>`;
-  } else {
-    // szövegesnél már látszik a minta; csak a verdict frissül
-    const verdict = fb.querySelector(".verdict");
-    if (verdict) verdict.textContent = correct ? "Eltaláltad ✓" : "Legközelebb sikerül ✗";
-    const sg = fb.querySelector(".self-grade");
-    if (sg) sg.remove();
+    return;
   }
-
-  $("checkBtn").classList.add("hidden");
-  $("nextBtn").disabled = false;
+  fb.className = "feedback " + (correct ? "ok" : "bad");
+  fb.innerHTML =
+    `<span class="verdict">${correct ? "Helyes! ✓" : "Nem jó ✗"}</span>` +
+    `<div>Helyes válasz: ${correctAnswerText(q)}</div>` +
+    `<div class="model-answer">${escapeHtml(q.explain)}</div>`;
 }
 
 // =============== segéd ===============
@@ -262,15 +324,25 @@ function escapeHtml(s) {
 }
 
 // =============== NAVIGÁCIÓ ===============
+function prev() {
+  if (state.idx === 0) return;
+  state.idx--;
+  renderQuestion();
+}
+
 function next() {
-  // flashcardban a "meg nem válaszolt" eseteket is lépni hagyjuk
-  if (state.mode === "flash" && state.answered.length <= state.idx) {
-    state.answered.push({ q: state.deck[state.idx], correct: null });
+  const total = state.deck.length;
+
+  // flashcardban a "meg nem válaszolt" (fel nem fedett) kérdést is továbbléphet,
+  // de jelöljük, hogy láttuk (null correct)
+  if (state.mode === "flash" && !state.results[state.idx]) {
+    state.results[state.idx] = { revealed: false, selected: null, correct: null, graded: false };
   }
-  state.idx++;
-  if (state.idx >= state.deck.length) {
+
+  if (state.idx >= total - 1) {
     finish();
   } else {
+    state.idx++;
     renderQuestion();
   }
 }
@@ -280,8 +352,9 @@ function finish() {
   const total = state.deck.length;
 
   if (state.mode === "quiz") {
-    const pct = Math.round((state.score / total) * 100);
-    $("resultScore").textContent = `${state.score} / ${total}`;
+    const score = currentScore();
+    const pct = Math.round((score / total) * 100);
+    $("resultScore").textContent = `${score} / ${total}`;
     $("resultScore").style.color =
       pct >= 75 ? "var(--ok)" : pct >= 50 ? "var(--warn)" : "var(--bad)";
     $("resultMsg").textContent =
@@ -291,10 +364,11 @@ function finish() {
 
     // témakörönkénti bontás
     const byTopic = {};
-    state.answered.forEach(({ q, correct }) => {
+    state.deck.forEach((q, i) => {
+      const r = state.results[i];
       if (!byTopic[q.topic]) byTopic[q.topic] = { ok: 0, all: 0 };
       byTopic[q.topic].all++;
-      if (correct) byTopic[q.topic].ok++;
+      if (r && r.correct === true) byTopic[q.topic].ok++;
     });
     const bd = $("resultBreakdown");
     bd.innerHTML = "";
@@ -322,6 +396,10 @@ function init() {
     r.addEventListener("change", (e) => (state.mode = e.target.value))
   );
   $("shuffleChk").addEventListener("change", (e) => (state.shuffle = e.target.checked));
+  $("originalChk").addEventListener("change", (e) => {
+    state.onlyOriginal = e.target.checked;
+    updateAvailable();
+  });
   $("countSel").addEventListener("change", (e) => (state.count = e.target.value));
 
   $("startBtn").addEventListener("click", () => {
@@ -331,6 +409,7 @@ function init() {
     renderQuestion();
   });
 
+  $("prevBtn").addEventListener("click", prev);
   $("showBtn").addEventListener("click", showAnswer);
   $("checkBtn").addEventListener("click", checkAnswer);
   $("nextBtn").addEventListener("click", next);
