@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Java Prog 4. KisZH – Gyakorló</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>☕ Java Prog 4. KisZH – Gyakorló</h1>
+    <p class="subtitle">Szálkezelés · JUnit5 · Lambda — flashcard és teszt mód</p>
+  </header>
+
+  <!-- ===================== START KÉPERNYŐ ===================== -->
+  <main id="home" class="screen">
+    <section class="card">
+      <h2>1. Válassz módot</h2>
+      <div class="mode-select">
+        <label class="mode-opt">
+          <input type="radio" name="mode" value="flash" checked />
+          <div>
+            <strong>🃏 Flashcard</strong>
+            <span>Kérdés → válasz felfedése. Végignézed, tempó nélkül.</span>
+          </div>
+        </label>
+        <label class="mode-opt">
+          <input type="radio" name="mode" value="quiz" />
+          <div>
+            <strong>📝 Teszt (kvíz)</strong>
+            <span>Megválaszolod, pontozódik, a végén eredmény.</span>
+          </div>
+        </label>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>2. Témakörök</h2>
+      <div id="topicFilters" class="topic-filters"></div>
+    </section>
+
+    <section class="card">
+      <h2>3. Beállítások</h2>
+      <label class="setting">
+        <input type="checkbox" id="shuffleChk" checked />
+        Kérdések keverése
+      </label>
+      <label class="setting">
+        Kérdések száma:
+        <select id="countSel">
+          <option value="all">Mind</option>
+          <option value="10">10</option>
+          <option value="20">20</option>
+          <option value="30">30</option>
+        </select>
+      </label>
+      <p id="availableInfo" class="muted"></p>
+    </section>
+
+    <button id="startBtn" class="btn primary big">Indítás ▶</button>
+  </main>
+
+  <!-- ===================== GYAKORLÓ KÉPERNYŐ ===================== -->
+  <main id="practice" class="screen hidden">
+    <div class="progress-bar"><div id="progressFill"></div></div>
+    <div class="practice-meta">
+      <span id="counter"></span>
+      <span id="scoreBox" class="hidden">Pont: <strong id="scoreVal">0</strong></span>
+      <span id="topicBadge" class="badge"></span>
+    </div>
+
+    <section class="card question-card">
+      <p id="questionText" class="question-text"></p>
+      <div id="answerArea" class="answer-area"></div>
+      <div id="feedback" class="feedback hidden"></div>
+    </section>
+
+    <div class="practice-controls">
+      <button id="quitBtn" class="btn ghost">⏹ Kilépés</button>
+      <button id="showBtn" class="btn">Válasz 👁</button>
+      <button id="checkBtn" class="btn primary hidden">Ellenőrzés ✓</button>
+      <button id="nextBtn" class="btn primary">Következő →</button>
+    </div>
+  </main>
+
+  <!-- ===================== EREDMÉNY KÉPERNYŐ ===================== -->
+  <main id="result" class="screen hidden">
+    <section class="card result-card">
+      <h2>Eredmény</h2>
+      <div id="resultScore" class="result-score"></div>
+      <p id="resultMsg" class="result-msg"></p>
+      <div id="resultBreakdown" class="result-breakdown"></div>
+      <div class="result-controls">
+        <button id="retryBtn" class="btn primary">Újra ugyanezt 🔁</button>
+        <button id="homeBtn" class="btn ghost">Főoldal 🏠</button>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>
+      Dokumentáció: <a href="docs/giga-mega-ultimate-cheatsheet.md">Cheatsheet</a> ·
+      <a href="docs/java-szalkezeles-puska.md">Részletes puska</a>
+    </p>
+  </footer>
+
+  <script src="questions.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

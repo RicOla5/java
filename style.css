@@ -1,0 +1,177 @@
+:root {
+  --bg: #0f1117;
+  --card: #1a1d27;
+  --card2: #232735;
+  --accent: #5b8def;
+  --accent-d: #3f6fd1;
+  --ok: #3ecf8e;
+  --bad: #ef5b7a;
+  --warn: #e7a33e;
+  --text: #e8eaf0;
+  --muted: #9aa0b0;
+  --border: #2c3142;
+  --radius: 14px;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.55;
+  padding-bottom: 60px;
+}
+
+header {
+  text-align: center;
+  padding: 28px 16px 8px;
+}
+header h1 { margin: 0; font-size: 1.7rem; }
+.subtitle { color: var(--muted); margin: 6px 0 0; font-size: 0.95rem; }
+
+.screen {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 16px;
+}
+.hidden { display: none !important; }
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  margin-bottom: 16px;
+}
+.card h2 { margin: 0 0 14px; font-size: 1.1rem; }
+
+/* ---- mód választó ---- */
+.mode-select { display: grid; gap: 10px; }
+.mode-opt {
+  display: flex; align-items: center; gap: 12px;
+  background: var(--card2); border: 1px solid var(--border);
+  border-radius: 10px; padding: 12px 14px; cursor: pointer;
+  transition: border-color .15s;
+}
+.mode-opt:hover { border-color: var(--accent); }
+.mode-opt input { width: 18px; height: 18px; accent-color: var(--accent); }
+.mode-opt strong { display: block; }
+.mode-opt span { color: var(--muted); font-size: 0.88rem; }
+
+/* ---- témakör szűrők ---- */
+.topic-filters { display: flex; flex-wrap: wrap; gap: 8px; }
+.topic-chip {
+  background: var(--card2); border: 1px solid var(--border);
+  border-radius: 999px; padding: 7px 14px; cursor: pointer;
+  user-select: none; font-size: 0.9rem; transition: all .15s;
+}
+.topic-chip.active {
+  background: var(--accent); border-color: var(--accent); color: #fff;
+}
+
+/* ---- beállítások ---- */
+.setting { display: block; margin: 8px 0; color: var(--text); }
+.setting input[type=checkbox] { accent-color: var(--accent); margin-right: 6px; }
+.setting select {
+  background: var(--card2); color: var(--text);
+  border: 1px solid var(--border); border-radius: 8px; padding: 5px 8px; margin-left: 6px;
+}
+.muted { color: var(--muted); font-size: 0.88rem; }
+
+/* ---- gombok ---- */
+.btn {
+  background: var(--card2); color: var(--text);
+  border: 1px solid var(--border); border-radius: 10px;
+  padding: 10px 18px; font-size: 0.95rem; cursor: pointer;
+  transition: all .15s;
+}
+.btn:hover { border-color: var(--accent); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+.btn.primary:hover { background: var(--accent-d); }
+.btn.ghost { background: transparent; }
+.btn.big { width: 100%; padding: 14px; font-size: 1.05rem; }
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+
+/* ---- progress ---- */
+.progress-bar {
+  height: 6px; background: var(--card2);
+  border-radius: 999px; overflow: hidden; margin-bottom: 12px;
+}
+#progressFill { height: 100%; width: 0; background: var(--accent); transition: width .25s; }
+
+.practice-meta {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 12px; font-size: 0.9rem; color: var(--muted);
+}
+.badge {
+  margin-left: auto; background: var(--card2);
+  border: 1px solid var(--border); border-radius: 999px;
+  padding: 3px 12px; font-size: 0.8rem; color: var(--text);
+}
+
+/* ---- kérdés ---- */
+.question-card { min-height: 180px; }
+.question-text { font-size: 1.15rem; font-weight: 600; margin: 0 0 18px; }
+
+.answer-area { display: grid; gap: 10px; }
+.opt {
+  text-align: left; background: var(--card2);
+  border: 1px solid var(--border); border-radius: 10px;
+  padding: 12px 15px; cursor: pointer; font-size: 0.98rem;
+  color: var(--text); transition: all .12s; width: 100%;
+}
+.opt:hover:not(:disabled) { border-color: var(--accent); }
+.opt.selected { border-color: var(--accent); background: #26304a; }
+.opt.correct { border-color: var(--ok); background: #163a2c; }
+.opt.wrong { border-color: var(--bad); background: #3a1620; }
+.opt:disabled { cursor: default; }
+
+/* text válasz (kódfeladatok) */
+.text-answer {
+  width: 100%; min-height: 90px; resize: vertical;
+  background: var(--card2); color: var(--text);
+  border: 1px solid var(--border); border-radius: 10px;
+  padding: 12px; font-family: "SF Mono", Consolas, monospace; font-size: 0.92rem;
+}
+.self-grade { display: flex; gap: 10px; margin-top: 10px; }
+
+/* ---- feedback ---- */
+.feedback {
+  margin-top: 16px; padding: 14px 16px; border-radius: 10px;
+  font-size: 0.95rem; border: 1px solid var(--border);
+}
+.feedback.ok { background: #14301f; border-color: var(--ok); }
+.feedback.bad { background: #311520; border-color: var(--bad); }
+.feedback .verdict { font-weight: 700; display: block; margin-bottom: 6px; }
+.feedback .model-answer {
+  background: #0d0f16; border-radius: 8px; padding: 8px 10px; margin-top: 8px;
+  font-family: "SF Mono", Consolas, monospace; font-size: 0.88rem;
+  white-space: pre-wrap; word-break: break-word;
+}
+
+/* ---- gyakorló kontrollok ---- */
+.practice-controls { display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap; }
+.practice-controls .btn { flex: 1; min-width: 120px; }
+#quitBtn { flex: 0 0 auto; }
+
+/* ---- eredmény ---- */
+.result-card { text-align: center; }
+.result-score { font-size: 3rem; font-weight: 800; margin: 10px 0; }
+.result-msg { color: var(--muted); margin-bottom: 20px; }
+.result-breakdown { text-align: left; display: grid; gap: 8px; margin-bottom: 20px; }
+.breakdown-row {
+  display: flex; justify-content: space-between;
+  background: var(--card2); border: 1px solid var(--border);
+  border-radius: 8px; padding: 8px 14px; font-size: 0.92rem;
+}
+.result-controls { display: flex; gap: 10px; }
+.result-controls .btn { flex: 1; }
+
+footer {
+  text-align: center; color: var(--muted);
+  font-size: 0.85rem; padding: 20px; margin-top: 20px;
+}
+footer a { color: var(--accent); text-decoration: none; }
+footer a:hover { text-decoration: underline; }
