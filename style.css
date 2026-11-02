@@ -110,6 +110,9 @@ header h1 { margin: 0; font-size: 1.7rem; }
   border: 1px solid var(--border); border-radius: 999px;
   padding: 3px 12px; font-size: 0.8rem; color: var(--text);
 }
+.badge.generated {
+  background: #3a2e14; border-color: var(--warn); color: #f0c674;
+}
 
 /* ---- kérdés ---- */
 .question-card { min-height: 180px; }

@@ -86,7 +86,8 @@ function renderQuestion() {
 
   $("progressFill").style.width = `${(state.idx / total) * 100}%`;
   $("counter").textContent = `${state.idx + 1} / ${total}`;
-  $("topicBadge").textContent = q.topic;
+  $("topicBadge").textContent = q.generated ? `${q.topic} · GYAKORLÓ` : q.topic;
+  $("topicBadge").classList.toggle("generated", !!q.generated);
   $("questionText").textContent = q.q;
 
   const fb = $("feedback");

@@ -142,7 +142,9 @@ public class SynchedBuffer<T> implements Buffer<T> {
 ## II/A. "Mi lesz a teszt eredménye?"
 
 > ZH osztály: `foo(i)→i` · **`bar(i)→ throw new Exception()`** · `qux(s)→ s+"zh"` (pl. `qux("x")="xzh"`).
-> **4 kimenetel:** SUCCESS (assert igaz) · FAILURE (assert bukik) · ERROR (kivétel dobódik) · SKIPPED (assume hamis / @Disabled).
+> **Kimenetelek:** SUCCESS (assert igaz) · FAILURE (assert bukik) · ERROR (kivétel dobódik) · **ABORTED** (assume hamis — JUnit5) / SKIPPED (@Disabled).
+>
+> ⚠️ **JUnit4 → JUnit5:** az `assumeTrue(false)` JUnit4-ben IGNORE/SKIPPED volt, **JUnit5-ben ABORTED**. (Ezek a táblázat eredményei valódi JUnit5-tel ellenőrizve.)
 
 | Teszt sora | Eredmény |
 |---|---|
@@ -152,7 +154,7 @@ public class SynchedBuffer<T> implements Buffer<T> {
 | `assertEquals(2, zh.foo(1))` | **FAILURE** *(1 ≠ 2)* |
 | `assertEquals(1, zh.foo(1))` | **SUCCESS** |
 | `assumeTrue(1 == zh.foo(1))` | **SUCCESS** |
-| `assumeTrue(2 == zh.foo(1))` | **SKIPPED** |
+| `assumeTrue(2 == zh.foo(1))` | **ABORTED** *(JUnit4: SKIPPED)* |
 | `assumeTrue(2 == zh.bar(1))` | **ERROR** *(bar dob)* |
 | `assertEquals(1, zh.bar(1))` | **ERROR** *(bar dob)* |
 
@@ -165,8 +167,10 @@ public class SynchedBuffer<T> implements Buffer<T> {
 **Szabályok:**
 - `assertEquals`/`assertNotEquals` → **tartalom** (`equals`)
 - `assertSame`/`assertNotSame` → **referencia** (`==`)
-- `assertTrue(false)` → FAILURE **DE** `assumeTrue(false)` → **SKIPPED**
+- `assertTrue(false)` → FAILURE **DE** `assumeTrue(false)` → **ABORTED** (JUnit5) / SKIPPED (JUnit4)
 - bármilyen **kivétel** a tesztben → **ERROR**
+- **JUnit5 assume-ok:** `org.junit.jupiter.api.Assumptions` (az assertek: `Assertions`)
+- `assertEquals(exp, act, delta)` — a 3. param a **delta** (nem üzenet); üzenet JUnit5-ben hátul
 
 ## II/B. Életciklus — "mit ír ki?"
 

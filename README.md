@@ -40,6 +40,15 @@ A `kzh4` branch Pages-re állítása után:
 Nincs build, statikus oldal. Elég megnyitni az `index.html`-t böngészőben
 (vagy `python3 -m http.server` a repó gyökerében, majd `http://localhost:8000`).
 
+## ✅ A JUnit5 eredmények ellenőrizve
+
+A kérdésbankban szereplő összes "mi lesz a teszt eredménye?" típusú JUnit5 feladat
+(SUCCESS / FAILURE / ERROR / ABORTED) **valódi JUnit5-tel (junit-jupiter 5.11, Java 25) le lett futtatva**,
+és a megadott válaszok egyeznek a tényleges futási eredménnyel:
+`13 SUCCESS · 16 failed (FAILURE+ERROR) · 2 ABORTED`.
+
+> Megjegyzés JUnit4 → JUnit5: az `assumeTrue(false)` JUnit5-ben **ABORTED** (JUnit4-ben IGNORE/SKIPPED).
+
 ## ✍️ Új kérdés hozzáadása
 
 A `questions.js`-ben vegyél fel egy új objektumot a `QUESTIONS` tömbbe:
