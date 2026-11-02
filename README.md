@@ -42,12 +42,12 @@ Nincs build, statikus oldal. Elég megnyitni az `index.html`-t böngészőben
 
 ## ✅ A JUnit5 eredmények ellenőrizve
 
-A kérdésbankban szereplő összes "mi lesz a teszt eredménye?" típusú JUnit5 feladat
-(SUCCESS / FAILURE / ERROR / ABORTED) **valódi JUnit5-tel (junit-jupiter 5.11, Java 25) le lett futtatva**,
-és a megadott válaszok egyeznek a tényleges futási eredménnyel:
-`13 SUCCESS · 16 failed (FAILURE+ERROR) · 2 ABORTED`.
+A kérdésbankban szereplő "mi lesz a teszt eredménye?" típusú JUnit5 feladatok
+**valódi JUnit5-tel (junit-jupiter 5.11, Java 25) le lettek futtatva**, és a megadott
+válaszok (SUCCESS / FAILURE / ERROR / SKIPPED) egyeznek a tényleges futási viselkedéssel.
 
-> Megjegyzés JUnit4 → JUnit5: az `assumeTrue(false)` JUnit5-ben **ABORTED** (JUnit4-ben IGNORE/SKIPPED).
+> Megjegyzés: az `assumeTrue(false)` esetén a teszt kimarad → a kvíz **SKIPPED**-ként
+> jelöli (JUnit4-ben ennek az IGNORE felelt meg).
 
 ## ✍️ Új kérdés hozzáadása
 

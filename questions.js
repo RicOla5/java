@@ -46,10 +46,10 @@ const QUESTIONS = [
     explain: "foo(1)=1, egyezik → SUCCESS." },
 
   { topic: "JUnit5", type: "single",
-    q: "ZH: foo(i) = i. Mi lesz (JUnit5): assumeTrue(2 == zh.foo(1)) ?",
-    options: ["SUCCESS", "FAILURE", "ERROR", "ABORTED (JUnit4-ben IGNORE/SKIPPED)"],
+    q: "ZH: foo(i) = i. Mi lesz: assumeTrue(2 == zh.foo(1)) ?",
+    options: ["SUCCESS", "FAILURE", "ERROR", "SKIPPED"],
     answer: 3,
-    explain: "2 == 1 hamis → assumeTrue(false). JUnit5-ben ez NEM FAILURE/ERROR, hanem ABORTED (megszakított). JUnit4-ben ugyanez IGNORE/SKIPPED volt. A lényeg: az assume hamis feltételnél nem buktatja a tesztet, csak megszakítja." },
+    explain: "2 == 1 hamis → assumeTrue(false). Az assume hamis feltételnél NEM buktatja a tesztet (nem FAILURE/ERROR), hanem kihagyja → SKIPPED." },
 
   { topic: "JUnit5", type: "single",
     q: "ZH: foo(i) = i. Mi lesz: assumeTrue(1 == zh.foo(1)) ?",
@@ -299,10 +299,10 @@ const QUESTIONS = [
 
   // --- JUnit5 vs JUnit4 különbségek / finomságok (generált) ---
   { topic: "JUnit5", type: "single", generated: true,
-    q: "JUnit5-ben melyik állapotba kerül a teszt assumeTrue(false) hatására?",
-    options: ["FAILURE", "ERROR", "ABORTED (megszakított)", "SUCCESS"],
+    q: "Mi lesz a teszt eredménye assumeTrue(false) hatására?",
+    options: ["FAILURE", "ERROR", "SKIPPED", "SUCCESS"],
     answer: 2,
-    explain: "JUnit5: assumeTrue(false) → ABORTED (a teszt megszakad, de nem hiba és nem is siker). JUnit4-ben ez IGNORE volt." },
+    explain: "assumeTrue(false) esetén a feltevés nem teljesül → a teszt kimarad → SKIPPED (nem hiba és nem is siker)." },
 
   { topic: "JUnit5", type: "single", generated: true,
     q: "Melyik osztályban vannak a JUnit5 assume metódusok (pl. assumeTrue)?",
@@ -340,7 +340,7 @@ const QUESTIONS = [
   // --- assertNotSame vs assertNotEquals (generált) ---
   { topic: "JUnit5", type: "single", generated: true,
     q: "ZH: qux(s) = s + \"zh\" (s változó). Mi lesz: assertNotSame(\"xzh\", zh.qux(\"x\")) ?",
-    options: ["SUCCESS", "FAILURE", "ERROR", "ABORTED"],
+    options: ["SUCCESS", "FAILURE", "ERROR", "SKIPPED"],
     answer: 0,
     explain: "qux egy VÁLTOZÓ (s) összefűzésével futásidőben ÚJ String objektumot gyárt (nincs constant folding). assertNotSame referenciát (!=) néz → a literál \"xzh\" és a futásidejű \"xzh\" különböző objektum → teljesül → SUCCESS." },
 
