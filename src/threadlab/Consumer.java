@@ -19,11 +19,10 @@ public class Consumer implements Runnable {
         try {
             while (true) {
                 String read = f.get();
-                long time = System.currentTimeMillis() % 100000L;
+                long time = System.currentTimeMillis() % 100000;
 
                 System.out.println("consumed " + s + " " + read + " " + time);
 
-                // Szünet a következő olvasás előtt.
                 Thread.sleep(n);
             }
         } catch (InterruptedException e) {

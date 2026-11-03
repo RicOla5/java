@@ -17,7 +17,7 @@ public class Producer implements Runnable {
         int number = 0;
         try {
             while (true) {
-                long time = System.currentTimeMillis() % 100000L;
+                long time = System.currentTimeMillis() % 100000;
                 String message = text + " " + number;
 
                 fifo.put(message);
