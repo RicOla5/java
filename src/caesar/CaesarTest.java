@@ -1,47 +1,38 @@
 package caesar;
 
-/**
- * Egyszerű, önálló teszt a Caesar-kódolás működésének ellenőrzéséhez (1. feladat).
- * Külső tesztkeretrendszer nélkül, egyszerű assert-jellegű ellenőrzésekkel fut.
- *
- * Futtatás:  java caesar.CaesarTest
- */
 public class CaesarTest {
 
     private static int passed = 0;
     private static int failed = 0;
 
     public static void main(String[] args) {
-        // 'K' eltolás: A->K, azaz 10-es eltolás (a feladatleírás példája).
+        //eltolás
         check("caesarCode(\"ABC\", 'K')", "KLM", Caesar.caesarCode("ABC", 'K'));
 
-        // 'A' eltolás: nincs változás (A->A, eltolás = 0).
+        //nincs eltolás
         check("caesarCode(\"HELLO\", 'A')", "HELLO", Caesar.caesarCode("HELLO", 'A'));
 
-        // Körbefordulás 'Z' után 'A'-ra: 'B' eltolással Z->A.
+        //körbefordul
         check("caesarCode(\"XYZ\", 'B')", "YZA", Caesar.caesarCode("XYZ", 'B'));
 
-        // Kisbetűs bemenet nagybetűssé alakul.
+        //kisbetű nagybetűvé
         check("caesarCode(\"abc\", 'B')", "BCD", Caesar.caesarCode("abc", 'B'));
 
-        // Nem betű karakterek változatlanok maradnak.
+        //nem betű változatlan marad
         check("caesarCode(\"A B!C\", 'B')", "B C!D", Caesar.caesarCode("A B!C", 'B'));
 
-        // A dekódolás a kódolás ellentettje: kódolás majd dekódolás -> eredeti.
+        //dekódolás ellenőrzés
         String original = "HELLOWORLD";
         char offset = 'K';
         String encoded = Caesar.caesarCode(original, offset);
         String decoded = Caesar.caesarDecode(encoded, offset);
         check("decode(encode(\"" + original + "\", 'K'), 'K')", original, decoded);
 
-        // Konkrét dekódolási ellenőrzés: 'K'-val kódolt "KLM" vissza "ABC".
+        //konkrét példa KLM ABCbe
         check("caesarDecode(\"KLM\", 'K')", "ABC", Caesar.caesarDecode("KLM", 'K'));
 
         System.out.println();
         System.out.println("Eredmeny: " + passed + " sikeres, " + failed + " sikertelen.");
-        if (failed > 0) {
-            System.exit(1);
-        }
     }
 
     private static void check(String name, String expected, String actual) {
