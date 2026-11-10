@@ -47,7 +47,9 @@ public final class Caesar {
      */
     private static int charToShift(char offset) {
         char upper = Character.toUpperCase(offset);
-        return mod(upper - 'A', ALPHABET_SIZE);
+        // Math.floorMod mindig nemnegatív maradékot ad pozitív osztó esetén
+        // (ellentétben a % operátorral), így nincs szükség saját modulóra.
+        return Math.floorMod(upper - 'A', ALPHABET_SIZE);
     }
 
     /**
@@ -68,7 +70,7 @@ public final class Caesar {
             char c = upper.charAt(i);
             if (c >= 'A' && c <= 'Z') {
                 int pos = c - 'A';
-                int newPos = mod(pos + shift, ALPHABET_SIZE);
+                int newPos = Math.floorMod(pos + shift, ALPHABET_SIZE);
                 sb.append((char) ('A' + newPos));
             } else {
                 // Nem betű karaktert változatlanul továbbadunk (pl. szóköz, szám).
@@ -76,10 +78,5 @@ public final class Caesar {
             }
         }
         return sb.toString();
-    }
-
-    /** Mindig nemnegatív maradékot adó modulo művelet. */
-    private static int mod(int a, int m) {
-        return ((a % m) + m) % m;
     }
 }
