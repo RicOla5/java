@@ -195,17 +195,22 @@ function renderReview(q) {
     });
   } else if (q.type === "text") {
     const box = document.createElement("div");
-    box.className = "model-answer";
-    box.textContent = q.answer.join("\n— vagy —\n");
+    box.innerHTML = renderCodeBlock(q.answer);
     area.appendChild(box);
   }
 
-  // magyarázat + a helyes válasz szövege a feedback dobozban
+  // magyarázat a feedback dobozban (text esetén a kódot fent már kiraktuk)
   const fb = $("feedback");
   fb.className = "feedback ok";
-  fb.innerHTML =
-    `<span class="verdict">Helyes válasz: ${correctAnswerText(q)}</span>` +
-    `<div class="model-answer">${escapeHtml(q.explain)}</div>`;
+  if (q.type === "text") {
+    fb.innerHTML =
+      `<span class="verdict">Minta-megoldás ↑</span>` +
+      `<div class="explain">${escapeHtml(q.explain)}</div>`;
+  } else {
+    fb.innerHTML =
+      `<span class="verdict">Helyes válasz: ${correctAnswerText(q)}</span>` +
+      `<div class="explain">${escapeHtml(q.explain)}</div>`;
+  }
 }
 
 // =============== egy már megválaszolt kérdés nézetének helyreállítása ===============
@@ -238,11 +243,19 @@ function restoreAnswered(q, res) {
   } else {
     // flashcard: csak a válasz felfedése
     fb.className = "feedback ok";
-    fb.innerHTML =
-      `<span class="verdict">Helyes válasz</span>` +
-      `<div>${correctAnswerText(q)}</div>` +
-      `<div class="model-answer">${escapeHtml(q.explain)}</div>`;
+    fb.innerHTML = revealAnswerHtml(q);
   }
+}
+
+// a "Helyes válasz" felfedés HTML-je flashcardhoz (text → kódblokk)
+function revealAnswerHtml(q) {
+  if (q.type === "text") {
+    return `<span class="verdict">Minta-megoldás:</span>` +
+      renderCodeBlock(q.answer) +
+      `<div class="explain">${escapeHtml(q.explain)}</div>`;
+  }
+  return `<span class="verdict">Helyes válasz: ${correctAnswerText(q)}</span>` +
+    `<div class="explain">${escapeHtml(q.explain)}</div>`;
 }
 
 // =============== VÁLASZ MUTATÁSA (flashcard) ===============
@@ -252,10 +265,7 @@ function showAnswer() {
 
   const fb = $("feedback");
   fb.className = "feedback ok";
-  fb.innerHTML =
-    `<span class="verdict">Helyes válasz</span>` +
-    `<div>${correctAnswerText(q)}</div>` +
-    `<div class="model-answer">${escapeHtml(q.explain)}</div>`;
+  fb.innerHTML = revealAnswerHtml(q);
 
   highlightCorrect(q);
   $("showBtn").classList.add("hidden");
@@ -298,8 +308,8 @@ function showSelfGrade(q) {
   fb.className = "feedback";
   fb.innerHTML =
     `<span class="verdict">Minta-megoldás:</span>` +
-    `<div class="model-answer">${escapeHtml(q.answer.join("\n— vagy —\n"))}</div>` +
-    `<div class="model-answer">${escapeHtml(q.explain)}</div>` +
+    renderCodeBlock(q.answer) +
+    `<div class="explain">${escapeHtml(q.explain)}</div>` +
     `<div class="self-grade">
        <button class="btn primary" id="sgOk">Eltaláltam ✓</button>
        <button class="btn ghost" id="sgNo">Nem talált ✗</button>
@@ -331,8 +341,8 @@ function renderFeedback(q, correct) {
     fb.className = "feedback " + (correct ? "ok" : "bad");
     fb.innerHTML =
       `<span class="verdict">${correct ? "Eltaláltad ✓" : "Nem talált ✗"}</span>` +
-      `<div class="model-answer">${escapeHtml(q.answer.join("\n— vagy —\n"))}</div>` +
-      `<div class="model-answer">${escapeHtml(q.explain)}</div>`;
+      renderCodeBlock(q.answer) +
+      `<div class="explain">${escapeHtml(q.explain)}</div>`;
     return;
   }
   fb.className = "feedback " + (correct ? "ok" : "bad");
