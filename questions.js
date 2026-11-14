@@ -200,7 +200,45 @@ const QUESTIONS = [
     answer: 1,
     explain: "Megosztott belső objektum védelme → a belső objektum monitorán kell szinkronizálni (synchronized(belső) blokk)." },
 
+  { topic: "Wrapper", type: "text",
+    q: "ConcurrentMorph<K,V> implements Morph<K,V>: a konstruktor kap egy Morph<K,V> objektumot, a put(k,v)/get(k) delegál, és az adott ConcurrentMorph metódusait egyidejűleg csak 1 szál hívhassa (más monitort ne befolyásoljon). Hogyan implementálod?",
+    answer: ["synchronized metódus (this-en): private Morph<K,V> morph; public ConcurrentMorph(Morph<K,V> m){ this.morph = m; } public synchronized void put(K k, V v){ morph.put(k,v); } public synchronized V get(K k){ return morph.get(k); }"],
+    explain: "'az adott objektumot 1 szál / más monitort ne' → synchronized METÓDUS (this-en). Ugyanaz a minta mint a ConcurrentStack-nél, csak put(k,v)/get(k) szignatúrával, a belső morph-nak delegálva." },
+
+  // ---------------------------------------------------------------
+  //  SZEMAFOR (saját szinkronizációs osztály írása)
+  // ---------------------------------------------------------------
+  { topic: "Szemafor", type: "text",
+    q: "Írj Semaphore osztályt! Konstruktor: max szabad hely (free=max). p(): ha van szabad hely, csökkenti a free-t és visszatér; ha nincs (free==0), várakozik amíg lesz. v(): növeli a free-t (de sosem több mint max). getFree(): visszaadja a free-t. A p/v/getFree-t több szál hívhatja → kölcsönös kizárás kell. A belső kivételeket (InterruptedException) nem kell elkapni. NEM használhatsz 'new' operátort (pl. nincs saját lock objektum).",
+    answer: [
+      "public class Semaphore {\n    private int max, free;\n    public Semaphore(int max) { this.max = max; this.free = max; }\n    public synchronized void p() throws InterruptedException {\n        while (free == 0) wait();\n        free--;\n    }\n    public synchronized void v() {\n        if (free < max) free++;\n        notifyAll();\n    }\n    public synchronized int getFree() { return free; }\n}"
+    ],
+    explain: "Minden metódus synchronized (a this monitorán → nincs 'new' lock objektum). p(): while(free==0) wait(); majd free--. v(): ha free<max akkor free++, és notifyAll() hogy a p()-ben várakozók felébredjenek. getFree(): synchronized getter. A várakozásnál while (nem if!) kell a spurious wakeup miatt." },
+
+  { topic: "Szemafor", type: "text",
+    q: "Írj bináris szemafor (Semaphore) osztályt, locked/unlocked állapottal! Konstruktor: paraméter nélkül, nyitott (unlocked) állapotban indul. lock(): ha nyitva van, lezárja és visszatér; ha zárva, várakozik amíg kinyitják. unlock(): kinyitja a szemafort. lock/unlock-ot több szál hívhatja → kölcsönös kizárás. InterruptedException-t nem kell elkapni, 'new' nem használható.",
+    answer: [
+      "public class Semaphore {\n    private boolean locked = false;\n    public Semaphore() { locked = false; }\n    public synchronized void lock() throws InterruptedException {\n        while (locked) wait();\n        locked = true;\n    }\n    public synchronized void unlock() {\n        locked = false;\n        notifyAll();\n    }\n}"
+    ],
+    explain: "boolean locked flag. lock(): while(locked) wait(); majd locked=true. unlock(): locked=false; notifyAll(). Minden metódus synchronized (this monitor, nincs 'new'). A while a spurious wakeup/több várakozó miatt kell." },
+
+  { topic: "Szemafor", type: "truefalse",
+    q: "A szemafor p() (vagy lock()) metódusában a várakozás feltételét if helyett while ciklussal érdemes vizsgálni (while(free==0) wait();).",
+    answer: true,
+    explain: "Igaz. A while kell: felébredés után (spurious wakeup, vagy több várakozó szál) újra ellenőrizni kell a feltételt, mielőtt továbbmegyünk. Az if hibás lehet." },
+
+  { topic: "Szemafor", type: "single",
+    q: "Miért synchronized a szemafor összes metódusa, és miért nem használunk külön 'new' lock objektumot?",
+    options: [
+      "Mert a feladat tiltja a new-t; a this monitorán szinkronizálunk (synchronized metódus)",
+      "Mert a static mezőket kell védeni",
+      "Mert a wait() csak static metódusból hívható",
+      "Nincs rá szükség, a szemafor magától szálbiztos"
+    ],
+    answer: 0,
+    explain: "A 'new' tiltott, ezért nem hozhatunk létre külön lock objektumot → a szemafor SAJÁT monitorán (this) szinkronizálunk a synchronized metódusokkal. A wait()/notifyAll() is a this monitorán hívódik." },
+
 ];
 
 // Elérhető témakörök (a szűrőhöz)
-const TOPICS = ["Szálkezelés", "Wrapper"];
+const TOPICS = ["Szálkezelés", "Wrapper", "Szemafor"];
