@@ -163,12 +163,16 @@ header h1 { margin: 0; font-size: 1.7rem; }
 /* ---- kódblokk (Java minta-megoldás) ---- */
 .code-block {
   background: #0d1117; border: 1px solid #222838; border-radius: 10px;
-  padding: 12px 14px; margin: 8px 0; overflow-x: auto;
+  padding: 12px 14px; margin: 8px 0;
+  max-width: 100%; overflow-x: auto;
   font-family: "SF Mono", "JetBrains Mono", Consolas, monospace;
   font-size: 0.86rem; line-height: 1.55;
-  white-space: pre; tab-size: 2;
+  /* pre-wrap: megőrzi a sortöréseket/behúzást, de a túl hosszú sort is tördeli,
+     így nem lóg ki a dobozból */
+  white-space: pre-wrap; overflow-wrap: anywhere; word-break: break-word;
+  tab-size: 2;
 }
-.code-block code { white-space: pre; display: block; }
+.code-block code { white-space: inherit; display: block; }
 .code-or {
   text-align: center; color: var(--muted); font-size: 0.8rem;
   margin: 2px 0; font-style: italic;

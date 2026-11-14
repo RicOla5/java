@@ -186,13 +186,17 @@ const QUESTIONS = [
 
   { topic: "Wrapper", type: "text",
     q: "ConcurrentStack<T> implements Stack<T>: a konstruktor kap egy Stack<T> s-t, a push/pop delegál, és az adott objektum metódusait egyidejűleg csak 1 szál hívhassa (más monitort ne befolyásoljon). Hogyan szinkronizálsz?",
-    answer: ["synchronized metódus (this-en): public synchronized void push(T t){ stack.push(t); } / public synchronized T pop(){ return stack.pop(); }"],
-    explain: "'adott objektumot 1 szál / más monitort ne' → synchronized METÓDUS (this-en szinkronizál)." },
+    answer: [
+      "public class ConcurrentStack<T> implements Stack<T> {\n    private Stack<T> stack;\n    public ConcurrentStack(Stack<T> s) { this.stack = s; }\n    public synchronized void push(T t) { stack.push(t); }\n    public synchronized T pop() { return stack.pop(); }\n}"
+    ],
+    explain: "'adott objektumot 1 szál / más monitort ne' → synchronized METÓDUS (this-en szinkronizál). Minden metódus delegál a belső stack-nek." },
 
   { topic: "Wrapper", type: "text",
     q: "SynchedBuffer<T> implements Buffer<T>: ha több SynchedBuffer UGYANAZT a b objektumot kapja, akkor is csak 1 szál férhessen a b-hez. Hogyan szinkronizálsz?",
-    answer: ["synchronized(buff) blokk a belső objektumon: public void put(T t){ synchronized(buff){ buff.put(t); } } / public T get(){ synchronized(buff){ return buff.get(); } }"],
-    explain: "'több wrapper ugyanazt a belső objektumot kapja' → a BELSŐ objektum monitorán kell szinkronizálni: synchronized(buff) BLOKK." },
+    answer: [
+      "public class SynchedBuffer<T> implements Buffer<T> {\n    private Buffer<T> buff;\n    public SynchedBuffer(Buffer<T> b) { this.buff = b; }\n    public void put(T t) {\n        synchronized (buff) { buff.put(t); }\n    }\n    public T get() {\n        synchronized (buff) { return buff.get(); }\n    }\n}"
+    ],
+    explain: "'több wrapper ugyanazt a belső objektumot kapja' → a BELSŐ objektum monitorán kell szinkronizálni: synchronized(buff) BLOKK (nem a this-en!)." },
 
   { topic: "Wrapper", type: "single",
     q: "A feladat: 'több wrapper ugyanazt a belső objektumot kapja, és a belsőhöz egyszerre csak egy szál férjen'. Melyik szinkronizáció kell?",
@@ -202,7 +206,9 @@ const QUESTIONS = [
 
   { topic: "Wrapper", type: "text",
     q: "ConcurrentMorph<K,V> implements Morph<K,V>: a konstruktor kap egy Morph<K,V> objektumot, a put(k,v)/get(k) delegál, és az adott ConcurrentMorph metódusait egyidejűleg csak 1 szál hívhassa (más monitort ne befolyásoljon). Hogyan implementálod?",
-    answer: ["synchronized metódus (this-en): private Morph<K,V> morph; public ConcurrentMorph(Morph<K,V> m){ this.morph = m; } public synchronized void put(K k, V v){ morph.put(k,v); } public synchronized V get(K k){ return morph.get(k); }"],
+    answer: [
+      "public class ConcurrentMorph<K, V> implements Morph<K, V> {\n    private Morph<K, V> morph;\n    public ConcurrentMorph(Morph<K, V> m) { this.morph = m; }\n    public synchronized void put(K k, V v) { morph.put(k, v); }\n    public synchronized V get(K k) { return morph.get(k); }\n}"
+    ],
     explain: "'az adott objektumot 1 szál / más monitort ne' → synchronized METÓDUS (this-en). Ugyanaz a minta mint a ConcurrentStack-nél, csak put(k,v)/get(k) szignatúrával, a belső morph-nak delegálva." },
 
   // ---------------------------------------------------------------
@@ -221,22 +227,6 @@ const QUESTIONS = [
       "public class Semaphore {\n    private boolean locked = false;\n    public Semaphore() { locked = false; }\n    public synchronized void lock() throws InterruptedException {\n        while (locked) wait();\n        locked = true;\n    }\n    public synchronized void unlock() {\n        locked = false;\n        notifyAll();\n    }\n}"
     ],
     explain: "boolean locked flag. lock(): while(locked) wait(); majd locked=true. unlock(): locked=false; notifyAll(). Minden metódus synchronized (this monitor, nincs 'new'). A while a spurious wakeup/több várakozó miatt kell." },
-
-  { topic: "Szemafor", type: "truefalse",
-    q: "A szemafor p() (vagy lock()) metódusában a várakozás feltételét if helyett while ciklussal érdemes vizsgálni (while(free==0) wait();).",
-    answer: true,
-    explain: "Igaz. A while kell: felébredés után (spurious wakeup, vagy több várakozó szál) újra ellenőrizni kell a feltételt, mielőtt továbbmegyünk. Az if hibás lehet." },
-
-  { topic: "Szemafor", type: "single",
-    q: "Miért synchronized a szemafor összes metódusa, és miért nem használunk külön 'new' lock objektumot?",
-    options: [
-      "Mert a feladat tiltja a new-t; a this monitorán szinkronizálunk (synchronized metódus)",
-      "Mert a static mezőket kell védeni",
-      "Mert a wait() csak static metódusból hívható",
-      "Nincs rá szükség, a szemafor magától szálbiztos"
-    ],
-    answer: 0,
-    explain: "A 'new' tiltott, ezért nem hozhatunk létre külön lock objektumot → a szemafor SAJÁT monitorán (this) szinkronizálunk a synchronized metódusokkal. A wait()/notifyAll() is a this monitorán hívódik." },
 
 ];
 
