@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Java Prog KisZH – Gyakorló</title>
-  <link rel="stylesheet" href="style.css?v=4" />
+  <title>Java Prog 5. KisZH – Szálkezelés Gyakorló</title>
+  <link rel="stylesheet" href="style.css?v=5" />
 </head>
 <body>
   <header>
-    <h1>☕ Java Prog KisZH – Gyakorló</h1>
-    <p class="subtitle">JUnit5 · Lambda — flashcard és teszt mód</p>
+    <h1>🧵 Java Prog 5. KisZH – Szálkezelés</h1>
+    <p class="subtitle">Szálkezelés (threads, synchronized, wait/notify) — flashcard és teszt mód</p>
   </header>
 
   <!-- ===================== START KÉPERNYŐ ===================== -->
@@ -45,10 +45,9 @@
         <input type="checkbox" id="shuffleChk" checked />
         Kérdések keverése
       </label>
-      <label class="setting">
-        <input type="checkbox" id="originalChk" />
-        Csak az eredeti (hivatalos ZH) kérdésekből
-      </label>
+      <!-- kzh5: minden kérdés hivatalos, a 'csak eredeti' szűrő nem releváns,
+           de az input rejtve megmarad, hogy a JS ne hibázzon -->
+      <input type="checkbox" id="originalChk" hidden />
       <label class="setting">
         Kérdések száma:
         <select id="countSel">
@@ -109,7 +108,7 @@
     </p>
   </footer>
 
-  <script src="questions.js?v=4"></script>
-  <script src="app.js?v=4"></script>
+  <script src="questions.js?v=5"></script>
+  <script src="app.js?v=5"></script>
 </body>
 </html>

@@ -1,25 +1,32 @@
 # Java Prog 4. KisZH – Gyakorló
 
-Webes gyakorló felület a 4. KisZH anyagához (**szálkezelés · JUnit5 · lambda**),
-plusz a hozzá tartozó jegyzetek/cheatsheetek.
+# Java Prog 5. KisZH – Szálkezelés Gyakorló (kzh5 branch)
+
+Webes gyakorló felület a **szálkezelés** anyagához (threads, synchronized,
+wait/notify, szálbiztos wrapper osztályok), ugyanazzal a működéssel, mint a
+`kzh4` (JUnit5+Lambda) felület.
+
+> **Branch-ek:**
+> - `kzh4` → JUnit5 + Lambda gyakorló
+> - `kzh5` → Szálkezelés gyakorló (ez a branch)
 
 ## 🌐 Élő felület (GitHub Pages)
 
-A `kzh4` branch Pages-re állítása után:
+A `kzh5` branch Pages-re állítása után:
 `https://<felhasználónév>.github.io/java/`
 
 ### Funkciók
 - **🃏 Flashcard mód** – kérdés → válasz felfedése, tempó nélkül.
 - **📝 Teszt (kvíz) mód** – pontozás, a végén témakörönkénti bontás.
-- **◀ Vissza / Következő ▶** – oda-vissza lépkedés a kérdések közt; a már
-  megadott válaszok (és a pontszám) megmaradnak lépkedésnél.
-- **Csak az eredeti (hivatalos ZH) kérdésekből** – kapcsolóval a generált
-  gyakorló kérdések kihagyhatók; így tisztán a valódi ZH-kérdésekből gyakorolhatsz.
-- **Témakör-szűrés** (JUnit5 / Lambda).
+- **◀ Vissza / Következő ▶** – oda-vissza lépkedés; a megadott válaszok és a
+  pontszám megmaradnak lépkedésnél.
+- **🏠 Menü** – bármikor vissza a kezdőképernyőre.
+- **Témakör-szűrés** (Szálkezelés / Wrapper).
 - **Keverés** és **kérdésszám** állítható.
 - Igaz/hamis és feleletválasztós kérdések automatikus pontozással.
-- Kódfeladatoknál (lambda) minta-megoldás + önértékelés.
-- A generált gyakorló kérdéseket **GYAKORLÓ** badge jelzi.
+- Kódfeladatoknál (wrapper) minta-megoldás + önértékelés.
+
+**Kérdések száma:** 37 (Szálkezelés: 34, Wrapper: 3).
 
 ## 📂 Fájlok
 
@@ -37,7 +44,7 @@ A `kzh4` branch Pages-re állítása után:
 
 1. GitHub → a repó **Settings → Pages**.
 2. **Source:** Deploy from a branch.
-3. **Branch:** `kzh4`, mappa: `/ (root)`. Mentés.
+3. **Branch:** `kzh5`, mappa: `/ (root)`. Mentés.
 4. Pár perc múlva elérhető a fenti URL-en.
 
 ## 🖥 Helyi futtatás
@@ -45,20 +52,11 @@ A `kzh4` branch Pages-re állítása után:
 Nincs build, statikus oldal. Elég megnyitni az `index.html`-t böngészőben
 (vagy `python3 -m http.server` a repó gyökerében, majd `http://localhost:8000`).
 
-## ✅ A JUnit5 eredmények ellenőrizve
-
-A kérdésbankban szereplő "mi lesz a teszt eredménye?" típusú JUnit5 feladatok
-**valódi JUnit5-tel (junit-jupiter 5.11, Java 25) le lettek futtatva**, és a megadott
-válaszok (SUCCESS / FAILURE / ERROR / SKIPPED) egyeznek a tényleges futási viselkedéssel.
-
-> Megjegyzés: az `assumeTrue(false)` esetén a teszt kimarad → a kvíz **SKIPPED**-ként
-> jelöli (JUnit4-ben ennek az IGNORE felelt meg).
-
 ## ✍️ Új kérdés hozzáadása
 
 A `questions.js`-ben vegyél fel egy új objektumot a `QUESTIONS` tömbbe:
 ```js
-{ topic: "JUnit5", type: "single",
+{ topic: "Szálkezelés", type: "single",
   q: "A kérdés szövege?",
   options: ["A", "B", "C"], answer: 1,   // a helyes index
   explain: "Miért ez a jó válasz." }
