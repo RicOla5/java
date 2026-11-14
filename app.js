@@ -115,6 +115,15 @@ function renderQuestion() {
   $("nextBtn").textContent =
     state.idx === total - 1 ? (state.mode === "quiz" ? "Befejezés ✓" : "Vége ✓") : "Következő →";
 
+  // --- VÉGIGNÉZÉS (review) mód: a helyes válasz rögtön látszik, nincs interakció ---
+  if (state.mode === "review") {
+    renderReview(q);
+    $("showBtn").classList.add("hidden");
+    $("checkBtn").classList.add("hidden");
+    $("nextBtn").disabled = false;
+    return;
+  }
+
   // válasz-terület felépítése
   if (q.type === "truefalse") {
     renderChoice(q, ["Igaz", "Hamis"], [true, false]);
@@ -167,6 +176,36 @@ function renderText(q) {
   ta.placeholder = "Írd ide a válaszod...";
   area.appendChild(ta);
   area._textarea = ta;
+}
+
+// =============== VÉGIGNÉZÉS (review): a helyes válasz rögtön látszik ===============
+function renderReview(q) {
+  const area = $("answerArea");
+
+  if (q.type === "truefalse" || q.type === "single") {
+    const labels = q.type === "truefalse" ? ["Igaz", "Hamis"] : q.options;
+    const values = q.type === "truefalse" ? [true, false] : q.options.map((_, i) => i);
+    labels.forEach((label, i) => {
+      const btn = document.createElement("button");
+      btn.className = "opt";
+      btn.textContent = label;
+      btn.disabled = true;
+      if (values[i] === q.answer) btn.classList.add("correct");
+      area.appendChild(btn);
+    });
+  } else if (q.type === "text") {
+    const box = document.createElement("div");
+    box.className = "model-answer";
+    box.textContent = q.answer.join("\n— vagy —\n");
+    area.appendChild(box);
+  }
+
+  // magyarázat + a helyes válasz szövege a feedback dobozban
+  const fb = $("feedback");
+  fb.className = "feedback ok";
+  fb.innerHTML =
+    `<span class="verdict">Helyes válasz: ${correctAnswerText(q)}</span>` +
+    `<div class="model-answer">${escapeHtml(q.explain)}</div>`;
 }
 
 // =============== egy már megválaszolt kérdés nézetének helyreállítása ===============
@@ -384,7 +423,10 @@ function finish() {
   } else {
     $("resultScore").textContent = "✓";
     $("resultScore").style.color = "var(--ok)";
-    $("resultMsg").textContent = `Végignézted mind a ${total} kártyát. 👏`;
+    $("resultMsg").textContent =
+      state.mode === "review"
+        ? `Átnézted mind a ${total} kérdést és a helyes válaszokat. 📖`
+        : `Végignézted mind a ${total} kártyát. 👏`;
     $("resultBreakdown").innerHTML = "";
   }
 
