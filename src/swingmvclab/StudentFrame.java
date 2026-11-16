@@ -20,39 +20,39 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 
 /*
- * A megjelen�tend� ablakunk oszt�lya.
+ * A megjelenítendő ablakunk osztálya.
  */
 public class StudentFrame extends JFrame {
-    
+
     /*
-     * Ebben az objektumban vannak a hallgat�i adatok.
-     * A program indul�s ut�n bet�lti az adatokat f�jlb�l, bez�r�skor pedig kimenti oda.
-     * 
-     * NE M�DOS�TSD!
+     * Ebben az objektumban vannak a hallgatói adatok.
+     * A program indulás után betölti az adatokat fájlból, bezáráskor pedig kimenti oda.
+     *
+     * NE MÓDOSÍTSD!
      */
     private StudentData data;
 
-    // 5. feladat: beviteli mezok az uj hallgato nevehez es neptunkodjahoz.
+    // 5. feladat: beviteli mezők az új hallgató nevéhez és neptunkódjához.
     private JTextField nameField;
     private JTextField neptunField;
 
     /*
-     * Itt hozzuk letre es adjuk hozza az ablakunkhoz a kulonbozo komponenseket
-     * (tablazat, beviteli mezo, gomb).
+     * Itt hozzuk létre és adjuk hozzá az ablakunkhoz a különböző komponenseket
+     * (táblázat, beviteli mező, gomb).
      */
     private void initComponents() {
         this.setLayout(new BorderLayout());
 
-        // 2. feladat: tablazat letrehozasa a data adatmodellel, gorditheto panelben.
+        // 2. feladat: táblázat létrehozása a data adatmodellel, görgethető panelben.
         JTable table = new JTable(data);
         table.setFillsViewportHeight(true);
         JScrollPane scrollPane = new JScrollPane(table);
         this.add(scrollPane, BorderLayout.CENTER);
 
-        // 5. feladat: also panel az uj hallgato felvetelehez.
+        // 5. feladat: alsó panel az új hallgató felvételéhez.
         JPanel inputPanel = new JPanel();
 
-        inputPanel.add(new JLabel("Nev:"));
+        inputPanel.add(new JLabel("Név:"));
         nameField = new JTextField(20);
         inputPanel.add(nameField);
 
@@ -74,15 +74,15 @@ public class StudentFrame extends JFrame {
 
     /*
      * Az ablak konstruktora.
-     * 
-     * NE M�DOS�TSD!
+     *
+     * NE MÓDOSÍTSD!
      */
     @SuppressWarnings("unchecked")
     public StudentFrame() {
-        super("Hallgat�i nyilv�ntart�s");
+        super("Hallgatói nyilvántartás");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        
-        // Indul�skor bet�ltj�k az adatokat
+
+        // Induláskor betöltjük az adatokat
         try {
             data = new StudentData();
             ObjectInputStream ois = new ObjectInputStream(new FileInputStream("students.dat"));
@@ -91,8 +91,8 @@ public class StudentFrame extends JFrame {
         } catch(Exception ex) {
             ex.printStackTrace();
         }
-        
-        // Bez�r�skor mentj�k az adatokat
+
+        // Bezáráskor mentjük az adatokat
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -106,18 +106,18 @@ public class StudentFrame extends JFrame {
             }
         });
 
-        // Fel�p�tj�k az ablakot
+        // Felépítjük az ablakot
         setMinimumSize(new Dimension(500, 200));
         initComponents();
     }
 
     /*
-     * A program bel�p�si pontja.
-     * 
-     * NE M�DOS�TSD!
+     * A program belépési pontja.
+     *
+     * NE MÓDOSÍTSD!
      */
     public static void main(String[] args) {
-        // Megjelen�tj�k az ablakot
+        // Megjelenítjük az ablakot
         StudentFrame sf = new StudentFrame();
         sf.setVisible(true);
     }

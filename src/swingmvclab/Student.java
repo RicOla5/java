@@ -3,70 +3,70 @@ package swingmvclab;
 import java.io.Serializable;
 
 /*
- * Egy hallgató adatait tároló osztály.
- * 
- * NE MÓDOSÍTSD!
+ * Egy hallgatÃ³ adatait tÃ¡rolÃ³ osztÃ¡ly.
+ *
+ * NE MÃ“DOSÃTSD!
  */
 public class Student implements Serializable {
 
-    // Hallgató neve
+    // HallgatÃ³ neve
     private String name;
 
-    // Hallgató Neptun-kódja.
+    // HallgatÃ³ Neptun-kÃ³dja.
     private String neptun;
 
-    // Van-e aláírása.
+    // Van-e alÃ¡Ã­rÃ¡sa.
     private boolean signature;
 
-    // A megszerzett osztályzat.
+    // A megszerzett osztÃ¡lyzat.
     private int grade;
 
-    // Hallgató nevének lekérdezése. 
+    // HallgatÃ³ nevÃ©nek lekÃ©rdezÃ©se.
     public String getName() {
         return name;
     }
-    
-    // Hallgató nevének beállítása.
+
+    // HallgatÃ³ nevÃ©nek beÃ¡llÃ­tÃ¡sa.
     public void setName(String name) {
         this.name = name;
     }
-    
-    // Hallgató Neptun-kódjának lekérdezése.
+
+    // HallgatÃ³ Neptun-kÃ³djÃ¡nak lekÃ©rdezÃ©se.
     public String getNeptun() {
         return neptun;
     }
-    
-    // Hallgató Neptun-kódjának beállítása.
+
+    // HallgatÃ³ Neptun-kÃ³djÃ¡nak beÃ¡llÃ­tÃ¡sa.
     public void setNeptun(String neptun) {
         this.neptun = neptun;
     }
-    
-    // Aláírás meglétének lekérdezése.
+
+    // AlÃ¡Ã­rÃ¡s meglÃ©tÃ©nek lekÃ©rdezÃ©se.
     public Boolean hasSignature() {
         return signature;
     }
-    
-    // Aláírás meglétének beállítása.
+
+    // AlÃ¡Ã­rÃ¡s meglÃ©tÃ©nek beÃ¡llÃ­tÃ¡sa.
     public void setSignature(Boolean signature) {
         this.signature = signature;
     }
 
-    // Osztályzat lekérdezése.
+    // OsztÃ¡lyzat lekÃ©rdezÃ©se.
     public Integer getGrade() {
         return grade;
     }
-    
-    // Osztályzat beállítása.
+
+    // OsztÃ¡lyzat beÃ¡llÃ­tÃ¡sa.
     public void setGrade(Integer grade) {
         this.grade = grade;
     }
 
-    // Hallgató létrehozása
+    // HallgatÃ³ lÃ©trehozÃ¡sa
     public Student(String name, String neptun, Boolean signature, Integer grade) {
         this.name = name;
         this.neptun = neptun;
         this.signature = signature;
         this.grade = grade;
     }
-    
+
 }

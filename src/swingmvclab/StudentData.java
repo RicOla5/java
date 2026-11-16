@@ -6,37 +6,37 @@ import java.util.List;
 import javax.swing.table.AbstractTableModel;
 
 /*
- * A hallgatok adatait tarolo osztaly.
+ * A hallgatók adatait tároló osztály.
  *
- * Az AbstractTableModel osbosztalybol szarmazik, igy kozvetlenul hasznalhato
- * egy JTable adatmodelljekent.
+ * Az AbstractTableModel ősosztályból származik, így közvetlenül használható
+ * egy JTable adatmodelljeként.
  */
 public class StudentData extends AbstractTableModel {
 
     private static final long serialVersionUID = 1L;
 
     /*
-     * Ez a tagvaltozo tarolja a hallgatoi adatokat.
-     * NE MODOSITSD!
+     * Ez a tagváltozó tárolja a hallgatói adatokat.
+     * NE MÓDOSÍTSD!
      */
     List<Student> students = new ArrayList<Student>();
 
-    // Az oszlopok fejlecei.
-    private static final String[] COLUMN_NAMES = { "Nev", "Neptun", "Alairas", "Jegy" };
+    // Az oszlopok fejlécei.
+    private static final String[] COLUMN_NAMES = { "Név", "Neptun", "Aláírás", "Jegy" };
 
-    // 2. feladat: az oszlopok szama (nev, neptun, alairas, jegy).
+    // 2. feladat: az oszlopok száma (név, neptun, aláírás, jegy).
     @Override
     public int getColumnCount() {
         return COLUMN_NAMES.length;
     }
 
-    // 2. feladat: a sorok szama (ahany hallgato van).
+    // 2. feladat: a sorok száma (ahány hallgató van).
     @Override
     public int getRowCount() {
         return students.size();
     }
 
-    // 2. feladat: az adott cella erteke.
+    // 2. feladat: az adott cella értéke.
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
         Student student = students.get(rowIndex);
@@ -48,13 +48,13 @@ public class StudentData extends AbstractTableModel {
         }
     }
 
-    // 3. feladat: az oszlopok fejleceinek szovege.
+    // 3. feladat: az oszlopok fejlécének szövege.
     @Override
     public String getColumnName(int column) {
         return COLUMN_NAMES[column];
     }
 
-    // 3. feladat: az oszlopok adattipusa (a megfelelo megjelenitesert).
+    // 3. feladat: az oszlopok adattípusa (a megfelelő megjelenítésért).
     @Override
     public Class<?> getColumnClass(int columnIndex) {
         switch (columnIndex) {
@@ -65,13 +65,13 @@ public class StudentData extends AbstractTableModel {
         }
     }
 
-    // 4. feladat: az Alairas (2) es Jegy (3) oszlop cellai szerkeszthetok.
+    // 4. feladat: az Aláírás (2) és a Jegy (3) oszlop cellái szerkeszthetők.
     @Override
     public boolean isCellEditable(int rowIndex, int columnIndex) {
         return columnIndex == 2 || columnIndex == 3;
     }
 
-    // 4. feladat: a felhasznaloi feluleten bevitt ertek eltarolasa.
+    // 4. feladat: a felhasználói felületen bevitt érték eltárolása.
     @Override
     public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
         Student student = students.get(rowIndex);
@@ -88,10 +88,10 @@ public class StudentData extends AbstractTableModel {
         fireTableCellUpdated(rowIndex, columnIndex);
     }
 
-    // 5. feladat: uj hallgato felvetele az adatmodellbe.
+    // 5. feladat: új hallgató felvétele az adatmodellbe.
     public void addStudent(String name, String neptun) {
         students.add(new Student(name, neptun, false, 0));
-        // Ertesitjuk a tablazatot, hogy egy uj sor kerult a lista vegere.
+        // Értesítjük a táblázatot, hogy egy új sor került a lista végére.
         fireTableRowsInserted(students.size() - 1, students.size() - 1);
     }
 
