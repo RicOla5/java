@@ -1,0 +1,47 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "name": "1. SaxTask",
+      "request": "launch",
+      "mainClass": "SaxTask",
+      "args": ["-i", "bme/bme.xml"]
+    },
+    {
+      "type": "java",
+      "name": "2. SaxTask2",
+      "request": "launch",
+      "mainClass": "SaxTask2",
+      "args": ["-i", "bme/bme.xml"]
+    },
+    {
+      "type": "java",
+      "name": "3. SaxTask3",
+      "request": "launch",
+      "mainClass": "SaxTask3",
+      "args": ["-i", "bme/bme.xml", "-lat", "47.4786346", "-lon", "19.0555773"]
+    },
+    {
+      "type": "java",
+      "name": "4. JDomTask",
+      "request": "launch",
+      "mainClass": "JDomTask",
+      "args": ["-i", "bme/bme.xml"]
+    },
+    {
+      "type": "java",
+      "name": "5. DomTask",
+      "request": "launch",
+      "mainClass": "DomTask",
+      "args": ["-i", "bme/bme.xml", "-o", "bme/bme_bus.xml"]
+    },
+    {
+      "type": "java",
+      "name": "6. DomTask2",
+      "request": "launch",
+      "mainClass": "DomTask2",
+      "args": ["-i", "bme/bme.xml", "-o", "bme/bme_bus_dist.xml", "-lat", "47.4786346", "-lon", "19.0555773"]
+    }
+  ]
+}
