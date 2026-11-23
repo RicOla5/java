@@ -177,6 +177,20 @@ header h1 { margin: 0; font-size: 1.7rem; }
   text-align: center; color: var(--muted); font-size: 0.8rem;
   margin: 2px 0; font-style: italic;
 }
+/* a diák által kitöltendő (megírandó) részek kiemelése a minta-megoldásban */
+.code-fill {
+  background: rgba(231, 163, 62, 0.22);
+  border-bottom: 2px solid var(--warn);
+  border-radius: 3px; padding: 0 2px;
+}
+.code-legend {
+  font-size: 0.8rem; color: var(--muted); margin: 2px 0 6px;
+  display: flex; align-items: center; gap: 7px;
+}
+.code-fill-sample {
+  display: inline-block; width: 22px; height: 12px; border-radius: 3px;
+  background: rgba(231, 163, 62, 0.22); border-bottom: 2px solid var(--warn);
+}
 /* szintaxiskiemelés */
 .tok-kw   { color: #ff7b72; }          /* kulcsszó (public, synchronized, ...) */
 .tok-type { color: #79c0ff; }          /* típusnév (Semaphore, String, T, ...) */

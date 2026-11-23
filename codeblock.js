@@ -103,15 +103,52 @@ function highlightJava(code) {
   return out;
 }
 
+// A kitöltendő (diák által megírandó) részeket a minta-megoldásban ⟦ ... ⟧
+// jelölők közé tesszük. Ezeket kiemelve (fill span) jelenítjük meg, a köztes
+// vázat normál szintaxiskiemeléssel. Ha nincs jelölő, az egész váz normál.
+function highlightWithFills(code) {
+  let out = "";
+  let i = 0;
+  const n = code.length;
+  while (i < n) {
+    const open = code.indexOf("⟦", i);
+    if (open === -1) {
+      out += highlightJava(code.slice(i));
+      break;
+    }
+    // jelölő előtti váz
+    out += highlightJava(code.slice(i, open));
+    const close = code.indexOf("⟧", open + 1);
+    if (close === -1) {
+      // nincs záró jelölő → a maradékot sima vázként
+      out += highlightJava(code.slice(open + 1));
+      break;
+    }
+    const inner = code.slice(open + 1, close);
+    out += `<span class="code-fill">${highlightJava(inner)}</span>`;
+    i = close + 1;
+  }
+  return out;
+}
+
+function hasFills(code) {
+  return code.indexOf("⟦") !== -1;
+}
+
 // egy KÓD-megoldás(ok) HTML blokkja. answers lehet string vagy string[].
 function renderCodeBlock(answers) {
   const list = Array.isArray(answers) ? answers : [answers];
-  return list
-    .map((code) => `<pre class="code-block"><code>${highlightJava(code)}</code></pre>`)
+  const anyFill = list.some(hasFills);
+  const legend = anyFill
+    ? `<div class="code-legend"><span class="code-fill-sample"></span> = amit neked kell megírnod (a többi adott váz)</div>`
+    : "";
+  const blocks = list
+    .map((code) => `<pre class="code-block"><code>${highlightWithFills(code)}</code></pre>`)
     .join(`<div class="code-or">— vagy —</div>`);
+  return legend + blocks;
 }
 
 // böngészőben globál, Node alatt export (teszthez)
 if (typeof module !== "undefined" && module.exports) {
-  module.exports = { highlightJava, renderCodeBlock };
+  module.exports = { highlightJava, renderCodeBlock, highlightWithFills };
 }
