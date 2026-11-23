@@ -22,6 +22,11 @@ const QUESTIONS = [
     explain: "Hamis. Egy üres konténer teljesen érvényes – csak nem jelenít meg semmit, de nem dob hibát." },
 
   { topic: "Swing", type: "truefalse",
+    q: "Nem kapunk futási idejű hibát, ha egy Swing Container-ben nincs elem.",
+    answer: true,
+    explain: "Igaz. Az üres konténer megengedett, nem okoz futási hibát. (Ugyanaz, mint az előző állítás, csak fordított megfogalmazásban.)" },
+
+  { topic: "Swing", type: "truefalse",
     q: "Ugyanahhoz a JButton objektumhoz csak egy ActionListener rendelhető hozzá.",
     answer: false,
     explain: "Hamis. Egy JButton-höz TÖBB ActionListener is hozzáadható (addActionListener többször is hívható); mindegyik értesítést kap a gombnyomáskor." },
@@ -79,18 +84,25 @@ const QUESTIONS = [
   //  SWING – kódfeladatok (text)
   // ---------------------------------------------------------------
   { topic: "Swing kód", type: "text",
-    q: "Készíts JFrame-leszármazott osztályt, amely ActionListener is. A konstruktorban: super(\"...\"), egy JButton (gomb), amihez EZT az objektumot (this) adod ActionListener-ként, és egy számláló mező (int nyomas). Az actionPerformed írja ki a számláló aktuális értékét. Töltsd ki a kommentben jelölt helyeket!",
+    q: "FirstFrame extends JFrame, ActionListener. Cél: ablak, ALUL (SOUTH) egy JTextField, BAL oldalon (WEST) egy gomb. Gombnyomásra a szabványos kimenetre íródjon ki a szövegmező tartalma. Töltsd ki a kommentben jelölt helyeket! (mezők: JButton gomb; JTextField f;)",
     answer: [
-      "public class FirstFrame extends JFrame implements ActionListener {\n    static int nyomas = 0;\n    JButton gomb;\n\n    @Override\n    public void actionPerformed(ActionEvent e) {\n        System.out.println(nyomas++);\n    }\n\n    public FirstFrame() {\n        super(\"Prog 2x\");\n        gomb = new JButton(\"Katt!\");\n        gomb.addActionListener(this);\n        this.add(gomb, BorderLayout.SOUTH);\n    }\n\n    public static void main(String[] args) {\n        JFrame jf = new FirstFrame();\n        jf.setVisible(true);\n    }\n}"
+      "class FirstFrame extends JFrame implements ActionListener {\n    JButton gomb;\n    JTextField f;\n\n    public void actionPerformed(ActionEvent ae) {\n        System.out.println(f.getText());\n    }\n\n    public FirstFrame() {\n        gomb = new JButton(\"Katt!\");\n        gomb.addActionListener(this);\n        f = new JTextField();\n        add(f, BorderLayout.SOUTH);\n        add(gomb, BorderLayout.WEST);\n        pack();\n    }\n\n    public static void main(String[] args) {\n        JFrame jf = new FirstFrame();\n        jf.setVisible(true);\n    }\n}"
     ],
-    explain: "A kitöltendő helyek: (1) 'implements ActionListener' az osztályfejben, (2) 'gomb.addActionListener(this)' a konstruktorban (mert az osztály maga a listener → this), (3) az actionPerformed felülírása @Override-dal. FIGYELEM: a gombot a KONSTRUKTORBAN kell hozzáadni (this.add(gomb, ...)), nem a main-ben – a main-ben a 'gomb' instance mezőre nem lehet statikus kontextusból hivatkozni." },
+    explain: "Kitöltendő: 'implements ActionListener'; az actionPerformed-ban 'f.getText()' kiírása; a konstruktorban 'gomb.addActionListener(this)', a komponensek hozzáadása (f → SOUTH, gomb → WEST) és 'pack()'. A 'this' a listener, mert az osztály implementálja az ActionListener-t." },
 
   { topic: "Swing kód", type: "text",
-    q: "Írj Swing alkalmazást: egy ablakban egy JTextField; ha a mezőben entert ütünk, a program kisbetűsítse a benne lévő szöveget. Segítség: ActionEvent.getSource() a komponens referenciája; String.toLowerCase() a kisbetűs változat. Ne használj lambdát, ne módosítsd a meglévő kódot (külön listener osztály).",
+    q: "Tuesday extends JFrame: egy ablakban egy JTextField (10 széles); ha a mezőben entert ütünk, kisbetűsítse a benne lévő szöveget. Segítség: ActionEvent.getSource() a komponens referenciája; String.toLowerCase(). Ne használj lambdát (külön listener osztály).",
     answer: [
-      "class Tuesday extends JFrame {\n    public Tuesday() {\n        super(\"Prog3 ZH\");\n        ActionListener listener = new TueActionListener();\n        JTextField what = new JTextField(10);\n        what.addActionListener(listener);\n        this.add(what);\n        this.pack();\n    }\n    public static void main(String[] args) {\n        JFrame frame = new Tuesday();\n        frame.setVisible(true);\n    }\n}\n\nclass TueActionListener implements ActionListener {\n    @Override\n    public void actionPerformed(ActionEvent ae) {\n        JTextField field = (JTextField) ae.getSource();\n        String cucc = field.getText();\n        cucc = cucc.toLowerCase();\n        field.setText(cucc);\n    }\n}"
+      "public class Tuesday extends JFrame {\n    public Tuesday() {\n        ActionListener listener = new TueActionListener();\n        JTextField what = new JTextField(10);\n        what.addActionListener(listener);\n        this.add(what);\n        this.pack();\n    }\n    public static void main(String[] args) {\n        JFrame f = new Tuesday();\n        f.setVisible(true);\n    }\n}\n\nclass TueActionListener implements ActionListener {\n    public void actionPerformed(ActionEvent event) {\n        JTextField f = (JTextField) event.getSource();\n        String h = f.getText();\n        h = h.toLowerCase();\n        f.setText(h);\n    }\n}"
     ],
-    explain: "Egy külön osztály implementálja az ActionListener-t. A JTextField-hez addActionListener-rel adjuk hozzá → enter leütésekor hívódik az actionPerformed. Ott getSource()-szal megkapjuk a mezőt (JTextField-re castolva), getText()-tel a szöveget, toLowerCase()-szel kisbetűsítjük, setText()-tel visszaírjuk." },
+    explain: "Külön osztály (TueActionListener) implementálja az ActionListener-t. A JTextField-hez addActionListener-rel adjuk hozzá → enter leütésekor hívódik az actionPerformed. Ott getSource()-szal megkapjuk a mezőt (JTextField-re castolva), getText()-tel a szöveget, toLowerCase()-szel kisbetűsítjük, setText()-tel visszaírjuk." },
+
+  { topic: "Swing kód", type: "text",
+    q: "MainFrame extends JFrame, ActionListener. Ablak: FELÜL (NORTH) egy JTextField, ALUL (SOUTH) egy gomb ('Change' felirattal). Gombnyomásra: ha a mező szerkeszthető, tiltsa le; ha nem szerkeszthető, tegye szerkeszthetővé. Tipp: JTextField.setEditable(boolean) és isEditable(). (mező: protected JTextField field;)",
+    answer: [
+      "public class MainFrame extends JFrame implements ActionListener {\n    protected JTextField field;\n\n    @Override\n    public void actionPerformed(ActionEvent ae) {\n        if (field.isEditable()) {\n            field.setEditable(false);\n        } else {\n            field.setEditable(true);\n        }\n    }\n\n    public MainFrame() {\n        field = new JTextField();\n        add(field, BorderLayout.NORTH);\n        JButton gomb = new JButton(\"Change\");\n        add(gomb, BorderLayout.SOUTH);\n        gomb.addActionListener(this);\n        pack();\n    }\n\n    public static void main(String[] args) {\n        JFrame jf = new MainFrame();\n        jf.setVisible(true);\n    }\n}"
+    ],
+    explain: "Az actionPerformed az isEditable() alapján VÁLTOGAT: ha szerkeszthető → setEditable(false), különben setEditable(true). A konstruktorban a mező NORTH-ra, a 'Change' gomb SOUTH-ra kerül, és a gombhoz addActionListener(this). (Az osztály maga a listener.)" },
 ];
 
 // Elérhető témakörök (a szűrőhöz)
