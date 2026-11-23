@@ -118,7 +118,11 @@ header h1 { margin: 0; font-size: 1.7rem; }
 
 /* ---- kérdés ---- */
 .question-card { min-height: 180px; }
-.question-text { font-size: 1.15rem; font-weight: 600; margin: 0 0 18px; }
+.question-text {
+  font-size: 1.1rem; font-weight: 600; margin: 0 0 18px;
+  white-space: pre-wrap;   /* a hivatalos feladatszöveg sortörései/bekezdései megmaradnak */
+  line-height: 1.5;
+}
 
 .answer-area { display: grid; gap: 10px; }
 .opt {
