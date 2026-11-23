@@ -1,18 +1,21 @@
 # Java Prog 4. KisZH – Gyakorló
 
-# Java Prog 5. KisZH – Szálkezelés Gyakorló (kzh5 branch)
+# Java Prog 6. KisZH – Swing GUI Gyakorló (kzh6 branch)
 
-Webes gyakorló felület a **szálkezelés** anyagához (threads, synchronized,
-wait/notify, szálbiztos wrapper osztályok), ugyanazzal a működéssel, mint a
-`kzh4` (JUnit5+Lambda) felület.
+Webes gyakorló felület a **Swing GUI** anyagához (JFrame, JButton, JTextField,
+ActionListener, eseménykezelés), ugyanazzal a működéssel, mint a korábbi
+gyakorló felületek.
 
 > **Branch-ek:**
 > - `kzh4` → JUnit5 + Lambda gyakorló
-> - `kzh5` → Szálkezelés gyakorló (ez a branch)
+> - `kzh5` → Szálkezelés gyakorló
+> - `kzh6` → Swing GUI gyakorló (ez a branch)
+
+**Kérdések száma:** 13 (Swing igaz/hamis + fogalmak: 11, Swing kódfeladat: 2).
 
 ## 🌐 Élő felület (GitHub Pages)
 
-A `kzh5` branch Pages-re állítása után:
+A `kzh6` branch Pages-re állítása után:
 `https://<felhasználónév>.github.io/java/`
 
 ### Funkciók
@@ -21,12 +24,12 @@ A `kzh5` branch Pages-re állítása után:
 - **◀ Vissza / Következő ▶** – oda-vissza lépkedés; a megadott válaszok és a
   pontszám megmaradnak lépkedésnél.
 - **🏠 Menü** – bármikor vissza a kezdőképernyőre.
-- **Témakör-szűrés** (Szálkezelés / Wrapper).
+- **Témakör-szűrés** (Swing / Swing kód).
 - **Keverés** és **kérdésszám** állítható.
 - Igaz/hamis és feleletválasztós kérdések automatikus pontozással.
 - Kódfeladatoknál (wrapper) minta-megoldás + önértékelés.
 
-**Kérdések száma:** 37 (Szálkezelés: 34, Wrapper: 3).
+**Kérdések száma:** 13 (Swing: 11, Swing kód: 2).
 
 ## 📂 Fájlok
 
@@ -44,7 +47,7 @@ A `kzh5` branch Pages-re állítása után:
 
 1. GitHub → a repó **Settings → Pages**.
 2. **Source:** Deploy from a branch.
-3. **Branch:** `kzh5`, mappa: `/ (root)`. Mentés.
+3. **Branch:** `kzh6`, mappa: `/ (root)`. Mentés.
 4. Pár perc múlva elérhető a fenti URL-en.
 
 ## 🖥 Helyi futtatás
@@ -56,7 +59,7 @@ Nincs build, statikus oldal. Elég megnyitni az `index.html`-t böngészőben
 
 A `questions.js`-ben vegyél fel egy új objektumot a `QUESTIONS` tömbbe:
 ```js
-{ topic: "Szálkezelés", type: "single",
+{ topic: "Swing", type: "single",
   q: "A kérdés szövege?",
   options: ["A", "B", "C"], answer: 1,   // a helyes index
   explain: "Miért ez a jó válasz." }
